@@ -1,6 +1,9 @@
 import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
+import VueKonva from 'vue-konva'
+import App from './App'
+import store from './store/store'
+
+Vue.use(VueKonva)
 
 Vue.config.productionTip = false
 
