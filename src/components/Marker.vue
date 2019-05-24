@@ -1,6 +1,7 @@
 <template>
   <v-stage ref="stage" :config="konva"
-           @click="handleClick"
+           @mousedown="handleMouseDown"
+           @mouseup="handleMouseUp"
            @mousemove="handleMouseMove"
            @mouseout="handleMouseOut"
            @dragstart="handleDragstart"
@@ -25,7 +26,9 @@
           height: height
         },
         text: {text: 'Some text on canvas', fontSize: 15},
-        list: []
+        list: [],
+        mouseDrawStart: null,
+        mouseDrawEnd: null,
       };
     },
     created() {
@@ -39,17 +42,36 @@
       })
     },
     methods: {
-      handleClick(event) {
+      handleMouseDown(event) {
         const stage = event.target.getStage();
-        const pos = stage.getPointerPosition();
-        this.list.push({
-          x: pos.x,
-          y: pos.y,
-          width: 100,
-          height: 100,
+        if (event.target !== stage) {
+          return;
+        }
+        this.mouseDrawStart = stage.getPointerPosition();
+      },
+      handleMouseUp(event) {
+        const stage = event.target.getStage();
+        if (event.target !== stage) {
+          return;
+        }
+        this.mouseDrawEnd = stage.getPointerPosition();
+        this.createNewRect();
+      },
+      getRectDrawProp() {
+        let drawStart = this.mouseDrawStart;
+        let drawEnd = this.mouseDrawEnd;
+        return {
+          x: Math.min(drawStart.x, drawEnd.x),
+          y: Math.min(drawStart.y, drawEnd.y),
+          width: Math.abs(drawStart.x - drawEnd.x),
+          height: Math.abs(drawStart.y - drawEnd.y),
+        };
+      },
+      createNewRect() {
+        this.list.push(Object.assign({
           fill: '#d00',
           draggable: true,
-        });
+        }, this.getRectDrawProp()));
       },
       handleMouseOut(event) {
         this.text.text = 'Mouseout';
@@ -60,7 +82,8 @@
         const y = mousePos.y;
         this.text.text = 'x: ' + x + ', y: ' + y;
       },
-      handleDragstart(starComponent) {
+      handleDragstart(event) {
+        // console.log(event)
         // const shape = starComponent.getStage();
         // const dragLayer = vm.$refs.dragLayer.getStage();
         // const stage = vm.$refs.stage.getStage();
@@ -74,7 +97,7 @@
         // starComponent.config.scaleX = starComponent.config.startScale * 1.2;
         // starComponent.config.scaleY = starComponent.config.startScale * 1.2;
       },
-      handleDragend(starComponent) {
+      handleDragend(event) {
         // const shape = starComponent.getStage();
         // const layer = vm.$refs.layer.getStage();
         // const stage = vm.$refs.stage.getStage();
