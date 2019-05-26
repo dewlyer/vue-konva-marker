@@ -5,7 +5,6 @@
 </template>
 
 <script>
-
     import PaperMarker from './components/Marker'
 
     export default {
