@@ -31,12 +31,28 @@
         created() {
             this.list.push({
                 id: 'rect1',
-                x: 100,
-                y: 100,
+                x: 120,
+                y: 120,
                 width: 100,
                 height: 100,
                 fill: '#63da4f',
                 stroke: '#45af33',
+                strokeWidth: 2,
+                opacity: 0.35,
+                draggable: true,
+                // shadowColor: 'black',
+                // shadowBlur: 3,
+                // shadowOffset: { x: 2, y: 2 },
+                // shadowOpacity: 0.1
+            });
+            this.list.push({
+                id: 'rect2',
+                x: 550,
+                y: 180,
+                width: 300,
+                height: 158,
+                fill: '#59a8da',
+                stroke: '#4988bf',
                 strokeWidth: 2,
                 opacity: 0.35,
                 draggable: true,
