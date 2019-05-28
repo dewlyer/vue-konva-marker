@@ -40,6 +40,13 @@
                 selectedShapeId: '',
                 configTransformer: {
                     keepRatio: false,
+                    anchorSize: 6,
+                    anchorFill: '#e07575',
+                    anchorStroke: '#e07575',
+                    borderStroke: '#be4f52',
+                    borderDash: [4, 4],
+                    rotateAnchorOffset: 40,
+                    // rotateEnabled: false,
                     // enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
                 }
             };
@@ -52,15 +59,15 @@
                 y: 100,
                 width: 100,
                 height: 100,
-                fill: '#d00',
-                stroke: '#c00',
+                fill: '#63da4f',
+                stroke: '#45af33',
                 strokeWidth: 2,
-                opacity: 0.5,
+                opacity: 0.35,
                 draggable: true,
-                shadowColor: 'black',
-                shadowBlur: 2,
-                shadowOffset: { x: 1, y: 1 },
-                shadowOpacity: 0.2
+                // shadowColor: 'black',
+                // shadowBlur: 3,
+                // shadowOffset: { x: 2, y: 2 },
+                // shadowOpacity: 0.1
             })
         },
         mounted() {
