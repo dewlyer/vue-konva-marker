@@ -22,8 +22,7 @@
                 this.background.image = backgroundImage;
             };
         },
-        methods: {
-        }
+        methods: {}
     };
 </script>
 

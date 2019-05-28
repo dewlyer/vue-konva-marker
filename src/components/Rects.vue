@@ -1,20 +1,55 @@
 <template>
-    <v-layer ref="rect">
-        <v-rect v-for="item in list" :key="item.id" :config="item"
+    <v-layer ref="rects">
+        <v-rect v-for="item in rectsList" :key="item.id" :config="item"
                 @mousedown="handleRectsMouseDown"
                 @mouseenter="rectMouseOn"
                 @mouseleave="rectMouseOff">
         </v-rect>
-        <v-transformer ref="transformer" :config="transformer"/>
+        <v-transformer ref="transformer" :config="transformer"></v-transformer>
     </v-layer>
 </template>
 
 <script>
     export default {
+        props: {
+            list: {
+                type: Array,
+                default() {
+                    return [];
+                }
+            },
+            styleIndex: {
+                type: Number,
+                default: 0
+            }
+        },
         data() {
             return {
-                selectedShapeId: '',
-                list: [],
+                selectId: '',
+                style: [
+                    {
+                        fill: '#63da4f',
+                        stroke: '#45af33',
+                        strokeWidth: 2,
+                        opacity: 0.35,
+                        draggable: true,
+                        // shadowColor: 'black',
+                        // shadowBlur: 3,
+                        // shadowOffset: { x: 2, y: 2 },
+                        // shadowOpacity: 0.1
+                    },
+                    {
+                        fill: '#59a8da',
+                        stroke: '#4988bf',
+                        strokeWidth: 2,
+                        opacity: 0.35,
+                        draggable: true,
+                        // shadowColor: 'black',
+                        // shadowBlur: 3,
+                        // shadowOffset: { x: 2, y: 2 },
+                        // shadowOpacity: 0.1
+                    }
+                ],
                 transformer: {
                     keepRatio: false,
                     anchorSize: 6,
@@ -28,41 +63,17 @@
                 }
             };
         },
+        computed: {
+            rectsList() {
+                return this.list.map(item => Object.assign(item, this.getRectStyle()));
+            }
+        },
         created() {
-            this.list.push({
-                id: 'rect1',
-                x: 120,
-                y: 120,
-                width: 100,
-                height: 100,
-                fill: '#63da4f',
-                stroke: '#45af33',
-                strokeWidth: 2,
-                opacity: 0.35,
-                draggable: true,
-                // shadowColor: 'black',
-                // shadowBlur: 3,
-                // shadowOffset: { x: 2, y: 2 },
-                // shadowOpacity: 0.1
-            });
-            this.list.push({
-                id: 'rect2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-                fill: '#59a8da',
-                stroke: '#4988bf',
-                strokeWidth: 2,
-                opacity: 0.35,
-                draggable: true,
-                // shadowColor: 'black',
-                // shadowBlur: 3,
-                // shadowOffset: { x: 2, y: 2 },
-                // shadowOpacity: 0.1
-            })
         },
         methods: {
+            getRectStyle() {
+                return this.style[this.styleIndex] || {};
+            },
             rectMouseOn(event) {
                 event.target.getStage().container().style.cursor = 'move';
             },
@@ -71,7 +82,7 @@
             },
             handleRectsMouseDown(event) {
                 if (event.target.getClassName() !== 'Rect') {
-                    this.selectedShapeId = '';
+                    this.selectId = '';
                     this.updateTransformer();
                     return;
                 }
@@ -85,17 +96,17 @@
                 const id = event.target.id();
                 const rect = this.list.find(r => r.id === id);
                 if (rect) {
-                    this.selectedShapeId = id;
+                    this.selectId = id;
                 } else {
-                    this.selectedShapeId = '';
+                    this.selectId = '';
                 }
                 this.updateTransformer();
             },
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
                 const stage = transformerNode.getStage();
-                const {selectedShapeId} = this;
-                const selectedNode = stage.findOne('#' + selectedShapeId);
+                const {selectId} = this;
+                const selectedNode = stage.findOne('#' + selectId);
 
                 // do nothing if selected node is already attached
                 if (selectedNode === transformerNode.node()) {

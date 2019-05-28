@@ -4,13 +4,15 @@
              @mousemove="handleMouseMove" @mouseout="handleMouseOut"
              @dragstart="handleDragstart" @dragend="handleDragend">
 
-            <background-layer></background-layer>
+        <background-layer></background-layer>
 
-            <rects-layer></rects-layer>
+        <rects-layer :list="rectList" :styleIndex="styleIndex"></rects-layer>
 
-            <v-layer><v-text :config="text"></v-text></v-layer>
+        <v-layer>
+            <v-text :config="text"></v-text>
+        </v-layer>
 
-            <v-layer ref="dragLayer"></v-layer>
+        <v-layer ref="dragLayer"></v-layer>
     </v-stage>
 </template>
 
@@ -30,6 +32,25 @@
                     height: 0,
                     draggable: true
                 },
+                rectList: [
+                    {
+                        id: 'rect1',
+                        x: 120,
+                        y: 120,
+                        width: 100,
+                        height: 100,
+
+                    },
+                    {
+                        id: 'rect2',
+                        x: 550,
+                        y: 180,
+                        width: 300,
+                        height: 158,
+
+                    }
+                ],
+                styleIndex: 1,
                 text: {text: 'Some text on canvas', fontSize: 15},
                 mouseDrawStart: null,
                 mouseDrawEnd: null,
