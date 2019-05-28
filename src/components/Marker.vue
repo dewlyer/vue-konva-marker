@@ -1,5 +1,5 @@
 <template>
-    <v-stage class="marker-stage" ref="stage" :config="stage" data-str="abc"
+    <v-stage class="marker-stage" ref="stage" :config="stage"
              @mousedown="handleMouseDown" @mouseup="handleMouseUp"
              @mousemove="handleMouseMove" @mouseout="handleMouseOut"
              @dragstart="handleDragstart" @dragend="handleDragend">
@@ -68,21 +68,6 @@
                 this.stage.width = window.innerWidth;
                 this.stage.height = window.innerHeight;
             },
-            handleMouseDown(event) {
-                const stage = event.target.getStage();
-                if (event.target !== stage) {
-                    return;
-                }
-                this.mouseDrawStart = stage.getPointerPosition();
-            },
-            handleMouseUp(event) {
-                const stage = event.target.getStage();
-                if (event.target !== stage) {
-                    return;
-                }
-                this.mouseDrawEnd = stage.getPointerPosition();
-                this.createNewRect();
-            },
             getRectDrawProp() {
                 let drawStart = this.mouseDrawStart;
                 let drawEnd = this.mouseDrawEnd;
@@ -94,10 +79,9 @@
                 };
             },
             createNewRect() {
-                // this.list.push(Object.assign({
-                //     fill: '#d00',
-                //     draggable: true,
-                // }, this.getRectDrawProp()));
+                this.rectList.push(Object.assign({
+                    id: 'rect' + new Date().getTime()
+                }, this.getRectDrawProp()));
             },
             handleMouseOut() {
                 this.text.text = 'Mouseout';
@@ -108,8 +92,23 @@
                 const y = mousePos.y;
                 this.text.text = 'X: ' + x + ', Y: ' + y;
             },
-            handleDragstart() {
-                // console.log(event)
+            handleMouseDown(event) {
+                // this.stage.draggable = false;
+                if (event.target.getClassName() !== 'Image') {
+                    return;
+                }
+                const stage = event.target.getStage();
+                this.mouseDrawStart = stage.getPointerPosition();
+            },
+            handleMouseUp(event) {
+                if (event.target.getClassName() !== 'Image') {
+                    return;
+                }
+                const stage = event.target.getStage();
+                this.mouseDrawEnd = stage.getPointerPosition();
+                // this.createNewRect();
+            },
+            handleDragstart(event) {
                 // const shape = starComponent.getStage();
                 // const dragLayer = vm.$refs.dragLayer.getStage();
                 // const stage = vm.$refs.stage.getStage();
@@ -123,7 +122,7 @@
                 // starComponent.config.scaleX = starComponent.config.startScale * 1.2;
                 // starComponent.config.scaleY = starComponent.config.startScale * 1.2;
             },
-            handleDragend() {
+            handleDragend(event) {
                 // const shape = starComponent.getStage();
                 // const layer = vm.$refs.layer.getStage();
                 // const stage = vm.$refs.stage.getStage();
