@@ -32,7 +32,7 @@
                     height: 0,
                     draggable: true
                 },
-                styleIndex: 1,
+                styleIndex: 0,
                 rectList: [
                     {
                         id: 'rect1',
@@ -40,7 +40,6 @@
                         y: 120,
                         width: 100,
                         height: 100,
-
                     },
                     {
                         id: 'rect2',
@@ -48,10 +47,12 @@
                         y: 180,
                         width: 300,
                         height: 158,
-
                     }
                 ],
-                text: {text: 'Some text on canvas', fontSize: 15},
+                text: {
+                    fontSize: 15,
+                    text: 'Some text on canvas',
+                },
                 mouseDrawStart: null,
                 mouseDrawEnd: null,
             };
