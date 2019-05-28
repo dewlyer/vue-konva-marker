@@ -1,9 +1,9 @@
 <template>
     <v-layer ref="rects">
         <v-rect v-for="item in rectsList" :key="item.id" :config="item"
-                @mousedown="handleRectsMouseDown"
-                @mouseenter="rectMouseOn"
-                @mouseleave="rectMouseOff">
+                @mousedown="rectMouseDown"
+                @mouseenter="rectMouseEnter"
+                @mouseleave="rectMouseLeave">
         </v-rect>
         <v-transformer ref="transformer" :config="transformer"></v-transformer>
     </v-layer>
@@ -18,7 +18,7 @@
                     return [];
                 }
             },
-            styleIndex: {
+            index: {
                 type: Number,
                 default: 0
             }
@@ -26,7 +26,7 @@
         data() {
             return {
                 selectId: '',
-                style: [
+                rectStyles: [
                     {
                         fill: '#63da4f',
                         stroke: '#45af33',
@@ -72,34 +72,28 @@
         },
         methods: {
             getRectStyle() {
-                return this.style[this.styleIndex] || {};
+                return this.rectStyles[this.index] || {};
             },
-            rectMouseOn(event) {
+            rectMouseEnter(event) {
                 event.target.getStage().container().style.cursor = 'move';
             },
-            rectMouseOff(event) {
+            rectMouseLeave(event) {
                 event.target.getStage().container().style.cursor = 'default';
             },
-            handleRectsMouseDown(event) {
+            rectMouseDown(event) {
                 if (event.target.getClassName() !== 'Rect') {
                     this.selectId = '';
                     this.updateTransformer();
                     return;
                 }
 
-                // clicked on transformer - do nothing
                 if (event.target.getParent().className === 'Transformer') {
                     return;
                 }
 
-                // find clicked rect by its id
                 const id = event.target.id();
                 const rect = this.list.find(r => r.id === id);
-                if (rect) {
-                    this.selectId = id;
-                } else {
-                    this.selectId = '';
-                }
+                this.selectId = !rect ? '' : id;
                 this.updateTransformer();
             },
             updateTransformer() {
@@ -108,20 +102,18 @@
                 const {selectId} = this;
                 const selectedNode = stage.findOne('#' + selectId);
 
-                // do nothing if selected node is already attached
                 if (selectedNode === transformerNode.node()) {
                     return;
                 }
 
                 if (selectedNode) {
-                    // attach to another node
                     transformerNode.attachTo(selectedNode);
                 } else {
-                    // remove transformer
                     transformerNode.detach();
                 }
+
                 transformerNode.getLayer().batchDraw();
-            },
+            }
         }
     };
 </script>

@@ -6,7 +6,7 @@
 
         <background-layer></background-layer>
 
-        <rects-layer :list="rectList" :styleIndex="styleIndex"></rects-layer>
+        <rects-layer :list="rectList" :index="styleIndex"></rects-layer>
 
         <v-layer>
             <v-text :config="text"></v-text>
@@ -32,6 +32,7 @@
                     height: 0,
                     draggable: true
                 },
+                styleIndex: 1,
                 rectList: [
                     {
                         id: 'rect1',
@@ -50,7 +51,6 @@
 
                     }
                 ],
-                styleIndex: 1,
                 text: {text: 'Some text on canvas', fontSize: 15},
                 mouseDrawStart: null,
                 mouseDrawEnd: null,
