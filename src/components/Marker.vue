@@ -25,6 +25,12 @@
             BackgroundLayer,
             RectsLayer
         },
+        props: {
+            drawing: {
+                type: Boolean,
+                default: false
+            }
+        },
         data() {
             return {
                 stage: {
@@ -63,6 +69,11 @@
         mounted() {
             window.addEventListener('resize', this.updateStageSize);
         },
+        watch: {
+            drawing(value) {
+                this.stage.draggable = !value;
+            }
+        },
         methods: {
             updateStageSize() {
                 this.stage.width = window.innerWidth;
@@ -93,20 +104,31 @@
                 this.text.text = 'X: ' + x + ', Y: ' + y;
             },
             handleMouseDown(event) {
-                // this.stage.draggable = false;
                 if (event.target.getClassName() !== 'Image') {
                     return;
                 }
+
                 const stage = event.target.getStage();
-                this.mouseDrawStart = stage.getPointerPosition();
+
+                if (this.drawing) {
+                    this.mouseDrawStart = stage.getPointerPosition();
+                } else {
+                    console.log(this.drawing);
+                }
             },
             handleMouseUp(event) {
                 if (event.target.getClassName() !== 'Image') {
                     return;
                 }
+
                 const stage = event.target.getStage();
-                this.mouseDrawEnd = stage.getPointerPosition();
-                // this.createNewRect();
+
+                if (this.drawing) {
+                    this.mouseDrawEnd = stage.getPointerPosition();
+                    this.createNewRect();
+                } else {
+                    console.log(this.drawing);
+                }
             },
             handleDragstart(event) {
                 // const shape = starComponent.getStage();

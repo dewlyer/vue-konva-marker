@@ -1,6 +1,7 @@
 <template>
     <div id="app">
-        <PaperMarker/>
+        <paper-marker :drawing="drawing"></paper-marker>
+        <button type="button" class="button-draw" @click="enableMarkerDraw">{{drawBtnText}}</button>
     </div>
 </template>
 
@@ -11,6 +12,21 @@
         name: 'app',
         components: {
             PaperMarker
+        },
+        data() {
+            return {
+                drawing: false
+            }
+        },
+        computed: {
+            drawBtnText() {
+                return this.drawing ? '拖动' : '画框';
+            }
+        },
+        methods: {
+            enableMarkerDraw() {
+                this.drawing = !this.drawing;
+            }
         }
     }
 </script>
@@ -27,5 +43,11 @@
     #app {
         width: 100%;
         height: 100%;
+    }
+
+    .button-draw {
+        position: fixed;
+        left: 10px;
+        top: 10px;
     }
 </style>
