@@ -79,6 +79,11 @@
                 this.stage.width = window.innerWidth;
                 this.stage.height = window.innerHeight;
             },
+            createNewRect() {
+                this.rectList.push(Object.assign({
+                    id: 'rect_' + new Date().getTime()
+                }, this.getRectDrawProp()));
+            },
             getRectDrawProp() {
                 let stage = this.$refs.stage.getStage();
                 let x = stage.x();
@@ -91,11 +96,6 @@
                     width: Math.abs(drawStart.x - drawEnd.x),
                     height: Math.abs(drawStart.y - drawEnd.y),
                 };
-            },
-            createNewRect() {
-                this.rectList.push(Object.assign({
-                    id: 'rect_' + new Date().getTime()
-                }, this.getRectDrawProp()));
             },
             handleMouseOut() {
                 this.text.text = 'Mouseout';
@@ -111,12 +111,10 @@
                     return;
                 }
 
-                const stage = event.target.getStage();
-
                 if (this.drawing) {
-                    this.mouseDrawStart = stage.getPointerPosition();
+                    this.mouseDrawStart = this.getAbsolutePosition(event);
                 } else {
-                    console.log(this.drawing);
+                    // console.log(this.drawing);
                 }
             },
             handleMouseUp(event) {
@@ -124,14 +122,21 @@
                     return;
                 }
 
-                const stage = event.target.getStage();
-
                 if (this.drawing) {
-                    this.mouseDrawEnd = stage.getPointerPosition();
+                    this.mouseDrawEnd = this.getAbsolutePosition(event);
                     this.createNewRect();
                 } else {
-                    console.log(this.drawing);
+                    // console.log(this.drawing);
                 }
+            },
+            getAbsolutePosition(event) {
+                const stage = event.target.getStage();
+                const pointer = stage.getPointerPosition();
+                const {x, y} = stage.getAbsolutePosition();
+                return {
+                    x: pointer.x - x,
+                    y: pointer.y - y
+                };
             },
             handleDragstart(event) {
                 // const shape = starComponent.getStage();
