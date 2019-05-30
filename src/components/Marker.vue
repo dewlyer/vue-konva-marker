@@ -80,18 +80,21 @@
                 this.stage.height = window.innerHeight;
             },
             getRectDrawProp() {
+                let stage = this.$refs.stage.getStage();
+                let x = stage.x();
+                let y = stage.y();
                 let drawStart = this.mouseDrawStart;
                 let drawEnd = this.mouseDrawEnd;
                 return {
-                    x: Math.min(drawStart.x, drawEnd.x),
-                    y: Math.min(drawStart.y, drawEnd.y),
+                    x: Math.min(drawStart.x, drawEnd.x) - x,
+                    y: Math.min(drawStart.y, drawEnd.y) - y,
                     width: Math.abs(drawStart.x - drawEnd.x),
                     height: Math.abs(drawStart.y - drawEnd.y),
                 };
             },
             createNewRect() {
                 this.rectList.push(Object.assign({
-                    id: 'rect' + new Date().getTime()
+                    id: 'rect_' + new Date().getTime()
                 }, this.getRectDrawProp()));
             },
             handleMouseOut() {
