@@ -8,6 +8,10 @@
 
         <rects-layer :list="rectList" :index="styleIndex"></rects-layer>
 
+        <v-layer ref="drawLayer">
+            <v-rect :config="drawingRect"></v-rect>
+        </v-layer>
+
         <v-layer>
             <v-text :config="text"></v-text>
         </v-layer>
@@ -55,6 +59,16 @@
                         height: 158,
                     }
                 ],
+                drawingRect: {
+                    id: 'rect2',
+                    x: 0,
+                    y: 0,
+                    width: 0,
+                    height: 0,
+                    stroke: '#c00',
+                    strokeWidth: 1,
+                    visible: false
+                },
                 text: {
                     fontSize: 15,
                     text: 'Some text on canvas',
@@ -97,14 +111,19 @@
                     height: Math.abs(drawStart.y - drawEnd.y),
                 };
             },
-            handleMouseOut() {
-                this.text.text = 'Mouseout';
+            getAbsolutePosition(event) {
+                const stage = event.target.getStage();
+                const pointer = stage.getPointerPosition();
+                // const {x, y} = stage.getAbsolutePosition();
+                // console.log(x, y)
+                // return {
+                //     x: pointer.x,
+                //     y: pointer.y
+                // };
+                return pointer;
             },
-            handleMouseMove() {
-                const mousePos = this.$refs.stage.getStage().getPointerPosition();
-                const x = mousePos.x;
-                const y = mousePos.y;
-                this.text.text = 'X: ' + x + ', Y: ' + y;
+            handleMouseOut() {
+                // this.text.text = 'Mouseout';
             },
             handleMouseDown(event) {
                 if (event.target.getClassName() !== 'Image') {
@@ -113,6 +132,24 @@
 
                 if (this.drawing) {
                     this.mouseDrawStart = this.getAbsolutePosition(event);
+                    this.drawingRect.x = this.mouseDrawStart.x;
+                    this.drawingRect.y = this.mouseDrawStart.y;
+                    this.drawingRect.visible = true;
+                } else {
+                    // console.log(this.drawing);
+                }
+            },
+            handleMouseMove() {
+                // const mousePos = this.$refs.stage.getStage().getPointerPosition();
+                // const x = mousePos.x;
+                // const y = mousePos.y;
+                // this.text.text = 'X: ' + x + ', Y: ' + y;
+
+                if (this.drawing) {
+                    if (this.drawingRect.visible) {
+                        this.mouseDrawEnd = this.getAbsolutePosition(event);
+                        this.createNewRect();
+                    }
                 } else {
                     // console.log(this.drawing);
                 }
@@ -128,17 +165,6 @@
                 } else {
                     // console.log(this.drawing);
                 }
-            },
-            getAbsolutePosition(event) {
-                const stage = event.target.getStage();
-                const pointer = stage.getPointerPosition();
-                // const {x, y} = stage.getAbsolutePosition();
-                // console.log(x, y)
-                // return {
-                //     x: pointer.x,
-                //     y: pointer.y
-                // };
-                return pointer;
             },
             handleDragstart(event) {
                 // const shape = starComponent.getStage();
