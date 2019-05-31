@@ -132,11 +132,13 @@
             getAbsolutePosition(event) {
                 const stage = event.target.getStage();
                 const pointer = stage.getPointerPosition();
-                const {x, y} = stage.getAbsolutePosition();
-                return {
-                    x: pointer.x - x,
-                    y: pointer.y - y
-                };
+                // const {x, y} = stage.getAbsolutePosition();
+                // console.log(x, y)
+                // return {
+                //     x: pointer.x,
+                //     y: pointer.y
+                // };
+                return pointer;
             },
             handleDragstart(event) {
                 // const shape = starComponent.getStage();
