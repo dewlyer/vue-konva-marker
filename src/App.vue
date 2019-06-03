@@ -1,9 +1,6 @@
 <template>
     <div id="app">
-        <paper-marker :background="background" :drawing="drawing"
-                @drawend="handleDrawEnd">
-        </paper-marker>
-
+        <paper-marker :background="background" :drawing="drawing" @drawend="handleDrawEnd"></paper-marker>
         <div class="btn-wrapper">
             <button type="button" class="button-draw" @click="handleDrawStart">{{drawBtnText}}</button>
             <button type="button" class="button-image">换图</button>

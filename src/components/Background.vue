@@ -14,13 +14,18 @@
                 imageList: []
             };
         },
+        watch: {
+            src() {
+                this.loadBackgroundImages();
+            }
+        },
         methods: {
             loadBackgroundImages() {
-                let x = 0, y = 0;
                 this.loadAllImages().then(imageList => {
+                    let x = 0, y = 0;
                     this.imageList = imageList.map(image => {
-                        let config = {x, y, image}
-                        x += image.width
+                        let config = {x, y, image};
+                        x += image.width;
                         return config;
                     });
                 });
@@ -35,11 +40,6 @@
                     image.onerror = reject;
                     image.src = url;
                 });
-            }
-        },
-        watch: {
-            src() {
-                this.loadBackgroundImages();
             }
         },
         created() {

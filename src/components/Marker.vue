@@ -7,14 +7,13 @@
         <background-layer :src="background"></background-layer>
 
         <rects-layer :list="rectList" :index="styleIndex" :selected="selectedRectName"
-                     @selectedChange="handelRectSelectedChange">
-        </rects-layer>
+                     @selectedChange="handelRectSelectedChange"></rects-layer>
 
         <v-layer ref="drawLayer">
             <v-rect :config="drawingRect"></v-rect>
         </v-layer>
 
-        <v-layer>
+        <v-layer ref="textLayer">
             <v-text :config="text"></v-text>
         </v-layer>
 
@@ -220,7 +219,6 @@
             window.addEventListener('resize', this.updateStageSize);
         }
     };
-
 </script>
 
 <style scoped lang="scss">
