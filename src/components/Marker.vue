@@ -6,7 +6,9 @@
 
         <background-layer :src="background"></background-layer>
 
-        <rects-layer :list="rectList" :index="styleIndex"></rects-layer>
+        <rects-layer :list="rectList" :index="styleIndex" :selected="selectedRectName"
+                     @selectedChange="handelRectSelectedChange">
+        </rects-layer>
 
         <v-layer ref="drawLayer">
             <v-rect :config="drawingRect"></v-rect>
@@ -65,6 +67,7 @@
                         height: 158,
                     }
                 ],
+                selectedRectName: '',
                 drawingRect: {
                     name: 'rectDrawing',
                     x: 0,
@@ -119,10 +122,19 @@
                 // };
                 return pointer;
             },
+            handelRectSelectedChange(name) {
+                this.selectedRectName = name;
+            },
             handleMouseOut() {
                 // this.text.text = 'Mouseout';
             },
             handleMouseDown(event) {
+                if (event.target.getClassName() === 'Rect') {
+                    this.selectedRectName = event.target.name()
+                } else {
+                    this.selectedRectName = '';
+                }
+
                 if (event.target.getClassName() !== 'Image') {
                     return;
                 }

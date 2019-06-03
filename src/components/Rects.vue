@@ -21,11 +21,14 @@
             index: {
                 type: Number,
                 default: 0
+            },
+            selected: {
+                type: String,
+                default: ''
             }
         },
         data() {
             return {
-                selectName: '',
                 rectStyles: [
                     {
                         fill: '#63da4f',
@@ -68,7 +71,11 @@
                 return this.list.map(item => Object.assign(item, this.getRectStyle()));
             }
         },
-        created() {
+        created() {},
+        watch: {
+            selected() {
+                this.updateTransformer();
+            }
         },
         methods: {
             getRectStyle() {
@@ -81,23 +88,13 @@
                 event.target.getStage().container().style.cursor = 'default';
             },
             rectMouseDown(event) {
-                if (event.target.getClassName() !== 'Rect') {
-                    this.clearAllTransformer();
-                    return;
-                }
-
                 if (event.target.getParent().className === 'Transformer') {
                     return;
                 }
 
                 const name = event.target.name();
                 const rect = this.list.find(r => r.name === name);
-                this.selectName = !rect ? '' : name;
-                this.updateTransformer();
-            },
-            clearAllTransformer() {
-                this.selectName = '';
-                this.updateTransformer();
+                this.$emit('selectedChange', !rect ? '' : name);
             },
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
