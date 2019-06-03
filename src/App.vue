@@ -8,7 +8,8 @@
 </template>
 
 <script>
-    import Download from './assets/download.jpg';
+    import Paper_A from './assets/paper_a.jpg';
+    import Paper_B from './assets/paper_b.jpg';
     import PaperMarker from './components/Marker'
 
     export default {
@@ -18,7 +19,7 @@
         },
         data() {
             return {
-                background: [Download],
+                background: [Paper_A, Paper_B],
                 drawing: false
             }
         },

@@ -1,6 +1,6 @@
 <template>
     <v-layer ref="backgroundLayer">
-        <v-image :config="background"></v-image>
+        <v-image v-for="item in imageList" :key="item.key" :config="item"></v-image>
     </v-layer>
 </template>
 
@@ -11,27 +11,22 @@
         },
         data() {
             return {
-                background: {
-                    image: null
-                }
+                imageList: []
             };
-        },
-        created() {
-            this.loadBackgroundImages();
         },
         methods: {
             loadBackgroundImages() {
-                this.createImagePromises().then((src) => {
-                    src.forEach(image => {
-                        console.log(image)
-                        this.background.image = image;
+                let x = 0, y = 0;
+                this.loadAllImages().then(imageList => {
+                    this.imageList = imageList.map(image => {
+                        let config = {x, y, image}
+                        x += image.width
+                        return config;
                     });
                 });
             },
-            createImagePromises() {
-                let promises = [];
-                this.src.forEach(url => promises.push(this.createPromise(url)));
-                return Promise.all(promises);
+            loadAllImages() {
+                return Promise.all(this.src.map(url => this.createPromise(url)));
             },
             createPromise(url) {
                 return new Promise((resolve, reject) => {
@@ -41,6 +36,9 @@
                     image.src = url;
                 });
             }
+        },
+        created() {
+            this.loadBackgroundImages();
         }
     };
 </script>
