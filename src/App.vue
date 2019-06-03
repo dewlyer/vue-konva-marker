@@ -1,11 +1,14 @@
 <template>
     <div id="app">
-        <paper-marker :drawing="drawing" @drawend="handleDrawEnd"></paper-marker>
+        <paper-marker :background="background" :drawing="drawing"
+                @drawend="handleDrawEnd">
+        </paper-marker>
         <button type="button" class="button-draw" @click="handleDrawStart">{{drawBtnText}}</button>
     </div>
 </template>
 
 <script>
+    import Download from './assets/download.jpg';
     import PaperMarker from './components/Marker'
 
     export default {
@@ -15,6 +18,7 @@
         },
         data() {
             return {
+                background: [Download],
                 drawing: false
             }
         },

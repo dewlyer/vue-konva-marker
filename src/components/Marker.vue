@@ -4,7 +4,7 @@
              @mousemove="handleMouseMove" @mouseout="handleMouseOut"
              @dragstart="handleDragstart" @dragend="handleDragend">
 
-        <background-layer></background-layer>
+        <background-layer :src="background"></background-layer>
 
         <rects-layer :list="rectList" :index="styleIndex"></rects-layer>
 
@@ -30,6 +30,12 @@
             RectsLayer
         },
         props: {
+            background: {
+                type: Array,
+                default() {
+                    return [];
+                }
+            },
             drawing: {
                 type: Boolean,
                 default: false
@@ -77,16 +83,7 @@
                 mouseDrawEnd: null,
             };
         },
-        created() {
-            this.updateStageSize();
-        },
-        mounted() {
-            window.addEventListener('resize', this.updateStageSize);
-        },
-        watch: {
-            drawing(value) {
-                this.stage.draggable = !value;
-            }
+        computed: {
         },
         methods: {
             updateStageSize() {
@@ -198,6 +195,17 @@
                 //   shadowOffsetY: 5
                 // });
             }
+        },
+        watch: {
+            drawing(value) {
+                this.stage.draggable = !value;
+            }
+        },
+        created() {
+            this.updateStageSize();
+        },
+        mounted() {
+            window.addEventListener('resize', this.updateStageSize);
         }
     };
 
