@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-        <paper-marker :drawing="drawing"></paper-marker>
-        <button type="button" class="button-draw" @click="enableMarkerDraw">{{drawBtnText}}</button>
+        <paper-marker :drawing="drawing" @drawend="handleDrawEnd"></paper-marker>
+        <button type="button" class="button-draw" @click="handleDrawStart">{{drawBtnText}}</button>
     </div>
 </template>
 
@@ -24,8 +24,11 @@
             }
         },
         methods: {
-            enableMarkerDraw() {
-                this.drawing = !this.drawing;
+            handleDrawStart() {
+                this.drawing = true;
+            },
+            handleDrawEnd() {
+                this.drawing = false;
             }
         }
     }

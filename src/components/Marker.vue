@@ -162,6 +162,7 @@
                 if (this.drawing) {
                     this.mouseDrawEnd = this.getAbsolutePosition(event);
                     this.createNewRect();
+                    this.$emit('drawend');
                 } else {
                     // console.log(this.drawing);
                 }
