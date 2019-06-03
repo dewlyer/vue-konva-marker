@@ -51,14 +51,14 @@
                 styleIndex: 0,
                 rectList: [
                     {
-                        id: 'rect1',
+                        name: 'rect1',
                         x: 120,
                         y: 120,
                         width: 100,
                         height: 100,
                     },
                     {
-                        id: 'rect2',
+                        name: 'rect2',
                         x: 550,
                         y: 180,
                         width: 300,
@@ -66,7 +66,7 @@
                     }
                 ],
                 drawingRect: {
-                    id: 'rect2',
+                    name: 'rectDrawing',
                     x: 0,
                     y: 0,
                     width: 0,
@@ -92,7 +92,7 @@
             },
             createNewRect() {
                 this.rectList.push(Object.assign({
-                    id: 'rect_' + new Date().getTime()
+                    name: 'rect_' + new Date().getTime()
                 }, this.getRectDrawProp()));
             },
             getRectDrawProp() {
@@ -142,14 +142,14 @@
                 // const y = mousePos.y;
                 // this.text.text = 'X: ' + x + ', Y: ' + y;
 
-                if (this.drawing) {
-                    if (this.drawingRect.visible) {
-                        this.mouseDrawEnd = this.getAbsolutePosition(event);
-                        this.createNewRect();
-                    }
-                } else {
-                    // console.log(this.drawing);
-                }
+                // if (this.drawing) {
+                //     if (this.drawingRect.visible) {
+                //         this.mouseDrawEnd = this.getAbsolutePosition(event);
+                //         this.createNewRect();
+                //     }
+                // } else {
+                //     // console.log(this.drawing);
+                // }
             },
             handleMouseUp(event) {
                 if (event.target.getClassName() !== 'Image') {

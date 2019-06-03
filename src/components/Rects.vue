@@ -25,7 +25,7 @@
         },
         data() {
             return {
-                selectId: '',
+                selectName: '',
                 rectStyles: [
                     {
                         fill: '#63da4f',
@@ -82,8 +82,7 @@
             },
             rectMouseDown(event) {
                 if (event.target.getClassName() !== 'Rect') {
-                    this.selectId = '';
-                    this.updateTransformer();
+                    this.clearAllTransformer();
                     return;
                 }
 
@@ -91,16 +90,20 @@
                     return;
                 }
 
-                const id = event.target.id();
-                const rect = this.list.find(r => r.id === id);
-                this.selectId = !rect ? '' : id;
+                const name = event.target.name();
+                const rect = this.list.find(r => r.name === name);
+                this.selectName = !rect ? '' : name;
+                this.updateTransformer();
+            },
+            clearAllTransformer() {
+                this.selectName = '';
                 this.updateTransformer();
             },
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
                 const stage = transformerNode.getStage();
-                const {selectId} = this;
-                const selectedNode = stage.findOne('#' + selectId);
+                const {selectName} = this;
+                const selectedNode = stage.findOne('.' + selectName);
 
                 if (selectedNode === transformerNode.node()) {
                     return;
