@@ -37,6 +37,11 @@
                 });
             }
         },
+        watch: {
+            src() {
+                this.loadBackgroundImages();
+            }
+        },
         created() {
             this.loadBackgroundImages();
         }

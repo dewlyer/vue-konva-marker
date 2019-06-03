@@ -3,7 +3,12 @@
         <paper-marker :background="background" :drawing="drawing"
                 @drawend="handleDrawEnd">
         </paper-marker>
-        <button type="button" class="button-draw" @click="handleDrawStart">{{drawBtnText}}</button>
+
+        <div class="btn-wrapper">
+            <button type="button" class="button-draw" @click="handleDrawStart">{{drawBtnText}}</button>
+            <button type="button" class="button-image">换图</button>
+            <input type="file" class="input-image" @change="loadLocalImages" multiple>
+        </div>
     </div>
 </template>
 
@@ -34,6 +39,21 @@
             },
             handleDrawEnd() {
                 this.drawing = false;
+            },
+            loadLocalImages(e) {
+                this.readAllImageFiles(e.target.files).then(files => {
+                    if (files && files.length) {
+                        this.background = files;
+                    }
+                });
+            },
+            readAllImageFiles(files) {
+                return Promise.all(Array.prototype.map.call(files, file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = e => resolve(e.target.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                })));
             }
         }
     }
@@ -53,9 +73,26 @@
         height: 100%;
     }
 
-    .button-draw {
+    .btn-wrapper {
         position: fixed;
         left: 10px;
         top: 10px;
+        button {
+            margin: 3px;
+            padding: 5px 10px;
+            background: #666;
+            border: 1px solid #666;
+            color: #fff;
+            opacity: 0.9;
+            outline: none;
+        }
+        .button-image {}
+        .input-image {
+            width: 46px;
+            margin-left: -53px;
+            padding: 5px;
+            opacity: 0;
+            background: #c00;
+        }
     }
 </style>
