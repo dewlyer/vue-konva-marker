@@ -1,8 +1,7 @@
 <template>
     <v-stage class="marker-stage" ref="stage" :config="stage"
-             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp"
-             @mousemove="handleMouseMove" @mouseout="handleMouseOut"
-             @dragstart="handleDragstart" @dragend="handleDragend">
+             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp" @mousemove="handleStageMouseMove" 
+             @mouseout="handleMouseOut" @dragstart="handleDragstart" @dragend="handleDragend">
 
         <background-layer :src="background"></background-layer>
 
@@ -76,12 +75,18 @@
                     strokeWidth: 1,
                     visible: false
                 },
+                drawingRectStart: {
+                    x: 0,
+                    y: 0
+                },
+                drawingRectEnd: {
+                    x: 0,
+                    y: 0
+                },
                 text: {
                     fontSize: 15,
                     text: 'Some text on canvas',
-                },
-                mouseDrawStart: null,
-                mouseDrawEnd: null,
+                }
             };
         },
         computed: {
@@ -94,20 +99,20 @@
             createNewRect() {
                 this.rectList.push(Object.assign({
                     name: 'rect_' + new Date().getTime()
-                }, this.getRectDrawProp()));
+                }, this.drawingRect));
             },
-            getRectDrawProp() {
+            updateDrawingRect() {
                 let stage = this.$refs.stage.getStage();
                 let x = stage.x();
                 let y = stage.y();
-                let drawStart = this.mouseDrawStart;
-                let drawEnd = this.mouseDrawEnd;
-                return {
+                let drawStart = this.drawingRectStart;
+                let drawEnd = this.drawingRectEnd;
+                Object.assign(this.drawingRect, {
                     x: Math.min(drawStart.x, drawEnd.x) - x,
                     y: Math.min(drawStart.y, drawEnd.y) - y,
                     width: Math.abs(drawStart.x - drawEnd.x),
                     height: Math.abs(drawStart.y - drawEnd.y),
-                };
+                });
             },
             getAbsolutePosition(event) {
                 const stage = event.target.getStage();
@@ -119,6 +124,19 @@
                 //     y: pointer.y
                 // };
                 return pointer;
+            },
+            startDrawingRect() {
+                this.drawingRect.visible = true;
+                this.drawingRectStart = this.getAbsolutePosition(event);
+            },
+            endDrawingRect() {
+                this.drawingRect.visible = false;
+                this.createNewRect();
+                this.$emit('drawend');
+            },
+            doDrawingRect() {
+                this.drawingRectEnd = this.getAbsolutePosition(event);
+                this.updateDrawingRect();
             },
             handleStageMouseDown(event) {
                 const target = event.target;
@@ -133,41 +151,22 @@
                 }
 
                 if (this.drawing) {
-                    this.mouseDrawStart = this.getAbsolutePosition(event);
-                    this.drawingRect.x = this.mouseDrawStart.x;
-                    this.drawingRect.y = this.mouseDrawStart.y;
-                    this.drawingRect.visible = true;
-                } else {
-                    // console.log(this.drawing);
+                    this.startDrawingRect();
                 }
             },
-            handleStageMouseUp(event) {
-                if (event.target.getClassName() !== 'Image') {
-                    return;
-                }
-
+            handleStageMouseMove(event) {
                 if (this.drawing) {
-                    this.mouseDrawEnd = this.getAbsolutePosition(event);
-                    this.createNewRect();
-                    this.$emit('drawend');
-                } else {
-                    // console.log(this.drawing);
+                    this.doDrawingRect();
                 }
-            },
-            handleMouseMove() {
                 // const mousePos = this.$refs.stage.getStage().getPointerPosition();
                 // const x = mousePos.x;
                 // const y = mousePos.y;
                 // this.text.text = 'X: ' + x + ', Y: ' + y;
-
-                // if (this.drawing) {
-                //     if (this.drawingRect.visible) {
-                //         this.mouseDrawEnd = this.getAbsolutePosition(event);
-                //         this.createNewRect();
-                //     }
-                // } else {
-                //     // console.log(this.drawing);
-                // }
+            },
+            handleStageMouseUp(event) {
+                if (this.drawing) {
+                    this.endDrawingRect();
+                }
             },
             handleMouseOut() {
                 // this.text.text = 'Mouseout';
