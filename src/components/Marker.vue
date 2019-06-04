@@ -5,7 +5,11 @@
 
         <background-layer :src="background"></background-layer>
 
-        <rects-layer :list="rectList" :index="styleIndex" :selected="selectedRectName"></rects-layer>
+        <v-layer>
+            <rects-group :list="rectListA" :index="0" :selected="selectedRectName"></rects-group>
+            <rects-group :list="rectListB" :index="1" :selected="selectedRectName"></rects-group>
+            <rects-group :list="rectListC" :index="2" :selected="selectedRectName"></rects-group>
+        </v-layer>
 
         <v-layer ref="drawLayer">
             <v-rect :config="drawingRectWithStyle"></v-rect>
@@ -21,12 +25,12 @@
 
 <script>
     import BackgroundLayer from './Background';
-    import RectsLayer from './Rects';
+    import RectsGroup from './Rects';
 
     export default {
         components: {
             BackgroundLayer,
-            RectsLayer
+            RectsGroup
         },
         props: {
             background: {
@@ -47,17 +51,48 @@
                     height: 0,
                     draggable: true
                 },
-                styleIndex: 0,
-                rectList: [
+                rectListA: [
                     {
-                        name: 'rect1',
+                        name: 'recta1',
                         x: 120,
                         y: 120,
                         width: 100,
                         height: 100,
                     },
                     {
-                        name: 'rect2',
+                        name: 'recta2',
+                        x: 550,
+                        y: 180,
+                        width: 300,
+                        height: 158,
+                    }
+                ],
+                rectListB: [
+                    {
+                        name: 'rectb1',
+                        x: 120,
+                        y: 120,
+                        width: 100,
+                        height: 100,
+                    },
+                    {
+                        name: 'rectb2',
+                        x: 550,
+                        y: 180,
+                        width: 300,
+                        height: 158,
+                    }
+                ],
+                rectListC: [
+                    {
+                        name: 'rectc1',
+                        x: 120,
+                        y: 120,
+                        width: 100,
+                        height: 100,
+                    },
+                    {
+                        name: 'rectc2',
                         x: 550,
                         y: 180,
                         width: 300,
@@ -73,7 +108,7 @@
                     height: 0
                 },
                 drawingRectStyle: {
-                    opacity: 0.7,
+                    opacity: 0.9,
                     stroke: '#c00',
                     strokeWidth: 1,
                     dash: [5, 3]
@@ -103,7 +138,6 @@
                 this.rectList.push(Object.assign({}, this.drawingRect, {
                     name: 'rect_' + new Date().getTime()
                 }));
-                debugger
             },
             updateDrawingRect() {
                 if (!this.drawingRectStart || !this.drawingRectEnd) {

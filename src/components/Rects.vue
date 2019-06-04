@@ -1,9 +1,9 @@
 <template>
-    <v-layer ref="rects">
+    <v-group ref="rects">
         <v-rect v-for="item in rectsList" :key="item.id" :config="item"
                 @mouseenter="rectMouseEnter" @mouseleave="rectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"></v-transformer>
-    </v-layer>
+    </v-group>
 </template>
 
 <script>
@@ -32,22 +32,21 @@
                         stroke: '#45af33',
                         strokeWidth: 2,
                         opacity: 0.35,
-                        draggable: true,
-                        // shadowColor: 'black',
-                        // shadowBlur: 3,
-                        // shadowOffset: { x: 2, y: 2 },
-                        // shadowOpacity: 0.1
+                        draggable: true
                     },
                     {
                         fill: '#59a8da',
                         stroke: '#4988bf',
                         strokeWidth: 2,
                         opacity: 0.35,
-                        draggable: true,
-                        // shadowColor: 'black',
-                        // shadowBlur: 3,
-                        // shadowOffset: { x: 2, y: 2 },
-                        // shadowOpacity: 0.1
+                        draggable: true
+                    },
+                    {
+                        fill: '#da2b29',
+                        stroke: '#c22b29',
+                        strokeWidth: 2,
+                        opacity: 0.35,
+                        draggable: true
                     }
                 ],
                 transformer: {
