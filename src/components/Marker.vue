@@ -8,7 +8,7 @@
         <rects-layer :list="rectList" :index="styleIndex" :selected="selectedRectName"></rects-layer>
 
         <v-layer ref="drawLayer">
-            <v-rect :config="drawingRect"></v-rect>
+            <v-rect :config="drawingRectWithStyle"></v-rect>
         </v-layer>
 
         <v-layer ref="textLayer">
@@ -70,19 +70,11 @@
                     x: 0,
                     y: 0,
                     width: 0,
-                    height: 0,
-                    stroke: '#c00',
-                    strokeWidth: 1,
-                    visible: false
+                    height: 0
                 },
-                drawingRectStart: {
-                    x: 0,
-                    y: 0
-                },
-                drawingRectEnd: {
-                    x: 0,
-                    y: 0
-                },
+                drawingRectVisible: false,
+                drawingRectStart: null,
+                drawingRectEnd: null,
                 text: {
                     fontSize: 15,
                     text: 'Some text on canvas',
@@ -90,6 +82,13 @@
             };
         },
         computed: {
+            drawingRectWithStyle() {
+                return Object.assign({}, this.drawingRect, {
+                    visible: this.drawingRectVisible,
+                    stroke: '#c00',
+                    strokeWidth: 1
+                });
+            }
         },
         methods: {
             updateStageSize() {
@@ -97,11 +96,15 @@
                 this.stage.height = window.innerHeight;
             },
             createNewRect() {
-                this.rectList.push(Object.assign({
+                this.rectList.push(Object.assign({}, this.drawingRect, {
                     name: 'rect_' + new Date().getTime()
-                }, this.drawingRect));
+                }));
             },
             updateDrawingRect() {
+                if (!this.drawingRectStart || !this.drawingRectEnd) {
+                    return;
+                }
+
                 let stage = this.$refs.stage.getStage();
                 let x = stage.x();
                 let y = stage.y();
@@ -125,16 +128,21 @@
                 // };
                 return pointer;
             },
-            startDrawingRect() {
-                this.drawingRect.visible = true;
+            startDrawingRect(event) {
+                this.drawingRectVisible = true;
                 this.drawingRectStart = this.getAbsolutePosition(event);
             },
-            endDrawingRect() {
-                this.drawingRect.visible = false;
+            endDrawingRect(event) {
+                this.drawingRectVisible = false;
+                this.drawingRect.x = 0;
+                this.drawingRect.y = 0;
+                this.drawingRect.width = 0;
+                this.drawingRect.height = 0;
+                this.drawingRectStart = this.drawingRectEnd = null;
                 this.createNewRect();
                 this.$emit('drawend');
             },
-            doDrawingRect() {
+            doDrawingRect(event) {
                 this.drawingRectEnd = this.getAbsolutePosition(event);
                 this.updateDrawingRect();
             },
@@ -151,12 +159,12 @@
                 }
 
                 if (this.drawing) {
-                    this.startDrawingRect();
+                    this.startDrawingRect(event);
                 }
             },
             handleStageMouseMove(event) {
                 if (this.drawing) {
-                    this.doDrawingRect();
+                    this.doDrawingRect(event);
                 }
                 // const mousePos = this.$refs.stage.getStage().getPointerPosition();
                 // const x = mousePos.x;
@@ -165,7 +173,7 @@
             },
             handleStageMouseUp(event) {
                 if (this.drawing) {
-                    this.endDrawingRect();
+                    this.endDrawingRect(event);
                 }
             },
             handleMouseOut() {
