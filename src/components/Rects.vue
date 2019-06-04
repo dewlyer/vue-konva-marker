@@ -1,5 +1,5 @@
 <template>
-    <v-group ref="rects">
+    <v-group ref="rectsGroup">
         <v-rect v-for="item in rectsList" :key="item.id" :config="item"
                 @mouseenter="rectMouseEnter" @mouseleave="rectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"></v-transformer>

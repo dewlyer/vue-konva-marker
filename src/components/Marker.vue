@@ -5,7 +5,7 @@
 
         <background-layer :src="background"></background-layer>
 
-        <v-layer>
+        <v-layer ref="rectsLayer">
             <rects-group :list="rectListA" :index="0" :selected="selectedRectName"></rects-group>
             <rects-group :list="rectListB" :index="1" :selected="selectedRectName"></rects-group>
             <rects-group :list="rectListC" :index="2" :selected="selectedRectName"></rects-group>
@@ -71,7 +71,7 @@
                     {
                         name: 'rectb1',
                         x: 120,
-                        y: 120,
+                        y: 220,
                         width: 100,
                         height: 100,
                     },
@@ -87,7 +87,7 @@
                     {
                         name: 'rectc1',
                         x: 120,
-                        y: 120,
+                        y: 320,
                         width: 100,
                         height: 100,
                     },
