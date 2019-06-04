@@ -1,13 +1,12 @@
 <template>
     <v-stage class="marker-stage" ref="stage" :config="stage"
-             @mousedown="handleMouseDown" @mouseup="handleMouseUp"
+             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp"
              @mousemove="handleMouseMove" @mouseout="handleMouseOut"
              @dragstart="handleDragstart" @dragend="handleDragend">
 
         <background-layer :src="background"></background-layer>
 
-        <rects-layer :list="rectList" :index="styleIndex" :selected="selectedRectName"
-                     @selectedChange="handelRectSelectedChange"></rects-layer>
+        <rects-layer :list="rectList" :index="styleIndex" :selected="selectedRectName"></rects-layer>
 
         <v-layer ref="drawLayer">
             <v-rect :config="drawingRect"></v-rect>
@@ -121,20 +120,15 @@
                 // };
                 return pointer;
             },
-            handelRectSelectedChange(name) {
-                this.selectedRectName = name;
-            },
-            handleMouseOut() {
-                // this.text.text = 'Mouseout';
-            },
-            handleMouseDown(event) {
-                if (event.target.getClassName() === 'Rect') {
-                    this.selectedRectName = event.target.name()
-                } else {
-                    this.selectedRectName = '';
+            handleStageMouseDown(event) {
+                const target = event.target;
+                const className = target.getClassName();
+
+                if (target.getParent().getClassName() !== 'Transformer') {
+                    this.selectedRectName = className === 'Rect' ? target.name() : '';
                 }
 
-                if (event.target.getClassName() !== 'Image') {
+                if (className !== 'Image') {
                     return;
                 }
 
@@ -143,6 +137,19 @@
                     this.drawingRect.x = this.mouseDrawStart.x;
                     this.drawingRect.y = this.mouseDrawStart.y;
                     this.drawingRect.visible = true;
+                } else {
+                    // console.log(this.drawing);
+                }
+            },
+            handleStageMouseUp(event) {
+                if (event.target.getClassName() !== 'Image') {
+                    return;
+                }
+
+                if (this.drawing) {
+                    this.mouseDrawEnd = this.getAbsolutePosition(event);
+                    this.createNewRect();
+                    this.$emit('drawend');
                 } else {
                     // console.log(this.drawing);
                 }
@@ -162,18 +169,8 @@
                 //     // console.log(this.drawing);
                 // }
             },
-            handleMouseUp(event) {
-                if (event.target.getClassName() !== 'Image') {
-                    return;
-                }
-
-                if (this.drawing) {
-                    this.mouseDrawEnd = this.getAbsolutePosition(event);
-                    this.createNewRect();
-                    this.$emit('drawend');
-                } else {
-                    // console.log(this.drawing);
-                }
+            handleMouseOut() {
+                // this.text.text = 'Mouseout';
             },
             handleDragstart(event) {
                 // const shape = starComponent.getStage();

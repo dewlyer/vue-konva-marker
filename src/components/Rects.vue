@@ -1,10 +1,7 @@
 <template>
     <v-layer ref="rects">
         <v-rect v-for="item in rectsList" :key="item.id" :config="item"
-                @mousedown="rectMouseDown"
-                @mouseenter="rectMouseEnter"
-                @mouseleave="rectMouseLeave">
-        </v-rect>
+                @mouseenter="rectMouseEnter" @mouseleave="rectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"></v-transformer>
     </v-layer>
 </template>
@@ -69,11 +66,15 @@
         computed: {
             rectsList() {
                 return this.list.map(item => Object.assign(item, this.getRectStyle()));
+            },
+            selectedRectName() {
+                const rect = this.list.find(r => r.name === this.selected);
+                return !rect ? '' : this.selected;
             }
         },
         created() {},
         watch: {
-            selected() {
+            selectedRectName() {
                 this.updateTransformer();
             }
         },
@@ -87,20 +88,11 @@
             rectMouseLeave(event) {
                 event.target.getStage().container().style.cursor = 'default';
             },
-            rectMouseDown(event) {
-                if (event.target.getParent().className === 'Transformer') {
-                    return;
-                }
-
-                const name = event.target.name();
-                const rect = this.list.find(r => r.name === name);
-                this.$emit('selectedChange', !rect ? '' : name);
-            },
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
                 const stage = transformerNode.getStage();
-                const {selectName} = this;
-                const selectedNode = stage.findOne('.' + selectName);
+                const {selectedRectName} = this;
+                const selectedNode = stage.findOne('.' + selectedRectName);
 
                 if (selectedNode === transformerNode.node()) {
                     return;
