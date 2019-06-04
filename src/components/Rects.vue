@@ -29,22 +29,16 @@
                 rectStyles: [
                     {
                         fill: '#63da4f',
-                        stroke: '#45af33',
-                        strokeWidth: 2,
                         opacity: 0.35,
                         draggable: true
                     },
                     {
                         fill: '#59a8da',
-                        stroke: '#4988bf',
-                        strokeWidth: 2,
                         opacity: 0.35,
                         draggable: true
                     },
                     {
                         fill: '#da2b29',
-                        stroke: '#c22b29',
-                        strokeWidth: 2,
                         opacity: 0.35,
                         draggable: true
                     }
@@ -55,11 +49,12 @@
                     anchorFill: '#e07575',
                     anchorStroke: '#e07575',
                     borderStroke: '#be4f52',
-                    borderDash: [4, 4],
+                    borderDash: [4, 3],
                     rotateAnchorOffset: 40,
                     // rotateEnabled: false,
                     // enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
-                }
+                },
+                cursorStyle: 'default'
             };
         },
         computed: {
@@ -74,10 +69,15 @@
         },
         methods: {
             rectMouseEnter(event) {
-                event.target.getStage().container().style.cursor = 'move';
+                const container = event.target.getStage().container();
+                if (container.style.cursor) {
+                    this.cursorStyle = container.style.cursor;
+                }
+                container.style.cursor = 'move';
             },
             rectMouseLeave(event) {
-                event.target.getStage().container().style.cursor = 'default';
+                const container = event.target.getStage().container();
+                container.style.cursor = this.cursorStyle;
             },
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();

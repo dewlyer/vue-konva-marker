@@ -257,6 +257,8 @@
         },
         watch: {
             drawing(value) {
+                const container = this.$refs.stage.getStage().container();
+                container.style.cursor = value ? 'crosshair' : 'default';
                 this.stage.draggable = !value;
             }
         },
