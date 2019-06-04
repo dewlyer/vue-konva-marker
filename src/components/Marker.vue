@@ -99,6 +99,7 @@
                 this.rectList.push(Object.assign({}, this.drawingRect, {
                     name: 'rect_' + new Date().getTime()
                 }));
+                debugger
             },
             updateDrawingRect() {
                 if (!this.drawingRectStart || !this.drawingRectEnd) {
@@ -128,18 +129,22 @@
                 // };
                 return pointer;
             },
+            resetDrawingStatus() {
+                this.drawingRectStart = null;
+                this.drawingRectEnd = null;
+                this.drawingRect.x = 0;
+                this.drawingRect.y = 0;
+                this.drawingRect.width = 0;
+                this.drawingRect.height = 0;
+            },
             startDrawingRect(event) {
                 this.drawingRectVisible = true;
                 this.drawingRectStart = this.getAbsolutePosition(event);
             },
             endDrawingRect(event) {
                 this.drawingRectVisible = false;
-                this.drawingRect.x = 0;
-                this.drawingRect.y = 0;
-                this.drawingRect.width = 0;
-                this.drawingRect.height = 0;
-                this.drawingRectStart = this.drawingRectEnd = null;
                 this.createNewRect();
+                this.resetDrawingStatus();
                 this.$emit('drawend');
             },
             doDrawingRect(event) {
