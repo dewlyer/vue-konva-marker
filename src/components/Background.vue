@@ -1,6 +1,6 @@
 <template>
     <v-layer ref="backgroundLayer">
-        <v-image v-for="item in imageList" :key="item.key" :config="item"></v-image>
+        <v-image v-for="(item, index) in imageList" :key="index" :config="item"></v-image>
     </v-layer>
 </template>
 

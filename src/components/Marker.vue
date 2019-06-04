@@ -180,7 +180,7 @@
                 this.drawingRectVisible = true;
                 this.drawingRectStart = this.getAbsolutePosition(event);
             },
-            endDrawingRect(event) {
+            endDrawingRect() {
                 this.drawingRectVisible = false;
                 this.createNewRect(this.drawing);
                 this.resetDrawingStatus();
@@ -223,7 +223,7 @@
             handleMouseOut() {
                 // this.text.text = 'Mouseout';
             },
-            handleDragstart(event) {
+            handleDragstart() {
                 // const shape = starComponent.getStage();
                 // const dragLayer = vm.$refs.dragLayer.getStage();
                 // const stage = vm.$refs.stage.getStage();
@@ -237,7 +237,7 @@
                 // starComponent.config.scaleX = starComponent.config.startScale * 1.2;
                 // starComponent.config.scaleY = starComponent.config.startScale * 1.2;
             },
-            handleDragend(event) {
+            handleDragend() {
                 // const shape = starComponent.getStage();
                 // const layer = vm.$refs.layer.getStage();
                 // const stage = vm.$refs.stage.getStage();
