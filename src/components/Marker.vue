@@ -6,9 +6,7 @@
         <background-layer :src="background"></background-layer>
 
         <v-layer ref="rectsLayer">
-            <rects-group :list="rectListA" :index="0" :selected="selectedRectName"></rects-group>
-            <rects-group :list="rectListB" :index="1" :selected="selectedRectName"></rects-group>
-            <rects-group :list="rectListC" :index="2" :selected="selectedRectName"></rects-group>
+            <rects-group v-for="(item, index) in rectList" :key="index" :list="item" :index="index" :selected="selectedRectName"></rects-group>
         </v-layer>
 
         <v-layer ref="drawLayer">
@@ -40,7 +38,7 @@
                 }
             },
             drawing: {
-                type: Boolean,
+                type: [Number, Boolean],
                 default: false
             }
         },
@@ -51,53 +49,55 @@
                     height: 0,
                     draggable: true
                 },
-                rectListA: [
-                    {
-                        name: 'recta1',
-                        x: 120,
-                        y: 120,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        name: 'recta2',
-                        x: 550,
-                        y: 180,
-                        width: 300,
-                        height: 158,
-                    }
-                ],
-                rectListB: [
-                    {
-                        name: 'rectb1',
-                        x: 120,
-                        y: 220,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        name: 'rectb2',
-                        x: 550,
-                        y: 180,
-                        width: 300,
-                        height: 158,
-                    }
-                ],
-                rectListC: [
-                    {
-                        name: 'rectc1',
-                        x: 120,
-                        y: 320,
-                        width: 100,
-                        height: 100,
-                    },
-                    {
-                        name: 'rectc2',
-                        x: 550,
-                        y: 180,
-                        width: 300,
-                        height: 158,
-                    }
+                rectList: [
+                    [
+                        {
+                            name: 'recta1',
+                            x: 120,
+                            y: 120,
+                            width: 100,
+                            height: 100,
+                        },
+                        {
+                            name: 'recta2',
+                            x: 550,
+                            y: 180,
+                            width: 300,
+                            height: 158,
+                        }
+                    ],
+                    [
+                        {
+                            name: 'rectb1',
+                            x: 120,
+                            y: 220,
+                            width: 100,
+                            height: 100,
+                        },
+                        {
+                            name: 'rectb2',
+                            x: 550,
+                            y: 180,
+                            width: 300,
+                            height: 158,
+                        }
+                    ],
+                    [
+                        {
+                            name: 'rectc1',
+                            x: 120,
+                            y: 320,
+                            width: 100,
+                            height: 100,
+                        },
+                        {
+                            name: 'rectc2',
+                            x: 550,
+                            y: 180,
+                            width: 300,
+                            height: 158,
+                        }
+                    ]
                 ],
                 selectedRectName: '',
                 drawingRect: {
@@ -134,9 +134,10 @@
                 this.stage.width = window.innerWidth;
                 this.stage.height = window.innerHeight;
             },
-            createNewRect() {
-                this.rectList.push(Object.assign({}, this.drawingRect, {
-                    name: 'rect_' + new Date().getTime()
+            createNewRect(index) {
+                const i = index - 1;
+                this.rectList[i].push(Object.assign({}, this.drawingRect, {
+                    name: `rect_${i}_${new Date().getTime()}`
                 }));
             },
             updateDrawingRect() {
@@ -181,7 +182,7 @@
             },
             endDrawingRect(event) {
                 this.drawingRectVisible = false;
-                this.createNewRect();
+                this.createNewRect(this.drawing);
                 this.resetDrawingStatus();
                 this.$emit('drawend');
             },

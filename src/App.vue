@@ -2,7 +2,9 @@
     <div id="app">
         <paper-marker :background="background" :drawing="drawing" @drawend="handleDrawEnd"></paper-marker>
         <div class="btn-wrapper">
-            <button type="button" class="button-draw" @click="handleDrawStart">{{drawBtnText}}</button>
+            <button type="button" class="button-draw" @click="handleDrawStart(1)">绿框</button>
+            <button type="button" class="button-draw" @click="handleDrawStart(2)">蓝框</button>
+            <button type="button" class="button-draw" @click="handleDrawStart(3)">红框</button>
             <button type="button" class="button-image">换图</button>
             <input type="file" class="input-image" @change="loadLocalImages" multiple>
         </div>
@@ -26,13 +28,10 @@
             }
         },
         computed: {
-            drawBtnText() {
-                return this.drawing ? '拖动' : '画框';
-            }
         },
         methods: {
-            handleDrawStart() {
-                this.drawing = true;
+            handleDrawStart(index) {
+                this.drawing = index;
             },
             handleDrawEnd() {
                 this.drawing = false;
