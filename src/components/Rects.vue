@@ -1,6 +1,6 @@
 <template>
     <v-group ref="rectsGroup">
-        <v-rect v-for="item in rectsList" :key="item.id" :config="item"
+        <v-rect v-for="item in rectsList" :key="item.name" :config="item"
                 @mouseenter="rectMouseEnter" @mouseleave="rectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"></v-transformer>
     </v-group>
@@ -64,23 +64,15 @@
         },
         computed: {
             rectsList() {
-                return this.list.map(item => Object.assign(item, this.getRectStyle()));
+                const rectStyle = this.rectStyles[this.index] || {};
+                return this.list.map(item => Object.assign(item, rectStyle));
             },
             selectedRectName() {
                 const rect = this.list.find(r => r.name === this.selected);
                 return !rect ? '' : this.selected;
             }
         },
-        created() {},
-        watch: {
-            selectedRectName() {
-                this.updateTransformer();
-            }
-        },
         methods: {
-            getRectStyle() {
-                return this.rectStyles[this.index] || {};
-            },
             rectMouseEnter(event) {
                 event.target.getStage().container().style.cursor = 'move';
             },
@@ -105,7 +97,13 @@
 
                 transformerNode.getLayer().batchDraw();
             }
-        }
+        },
+        watch: {
+            selectedRectName() {
+                this.updateTransformer();
+            }
+        },
+        created() {}
     };
 </script>
 
