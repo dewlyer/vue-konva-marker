@@ -72,6 +72,12 @@
                     width: 0,
                     height: 0
                 },
+                drawingRectStyle: {
+                    opacity: 0.7,
+                    stroke: '#c00',
+                    strokeWidth: 1,
+                    dash: [5, 3]
+                },
                 drawingRectVisible: false,
                 drawingRectStart: null,
                 drawingRectEnd: null,
@@ -83,10 +89,8 @@
         },
         computed: {
             drawingRectWithStyle() {
-                return Object.assign({}, this.drawingRect, {
+                return Object.assign({}, this.drawingRect, this.drawingRectStyle, {
                     visible: this.drawingRectVisible,
-                    stroke: '#c00',
-                    strokeWidth: 1
                 });
             }
         },
