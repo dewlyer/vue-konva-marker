@@ -13,7 +13,9 @@
             return {
                 imageList: [],
                 config: {
-                    id: 'backgroundGroup'
+                    name: 'backgroundGroup',
+                    width: 0,
+                    height: 0
                 }
             };
         },
@@ -28,7 +30,11 @@
                     let x = 0, y = 0;
                     this.imageList = imageList.map(image => {
                         let config = {x, y, image};
+                        let width = image.width;
+                        let height = image.height;
                         x += image.width;
+                        this.config.width = x;
+                        this.config.height = Math.max(height, this.config.height);
                         return config;
                     });
                 });

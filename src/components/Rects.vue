@@ -7,6 +7,35 @@
 </template>
 
 <script>
+    let rectStyleBase = {
+        fill: '#999',
+        opacity: 0.35,
+        draggable: true,
+        dragBoundFunc(pos) {
+            const stage = this.getStage();
+            const group = stage.findOne('.backgroundGroup');
+            const offset = stage.getAbsolutePosition();
+            const x = offset.x;
+            const y = offset.y;
+            const w = offset.x + group.width() - this.width();
+            const h = offset.y + group.height() - this.height();
+
+            if (pos.x > w) {
+                pos.x = w;
+            } else if (pos.x < x) {
+                pos.x = x;
+            }
+
+            if (pos.y > h) {
+                pos.y = h;
+            } else if (pos.y < y) {
+                pos.y = y;
+            }
+
+            return pos;
+        }
+    };
+
     export default {
         props: {
             list: {
@@ -26,39 +55,7 @@
         },
         data() {
             return {
-                rectStyles: [
-                    {
-                        fill: '#63da4f',
-                        opacity: 0.35,
-                        draggable: true,
-                        dragBoundFunc: pos => {
-                            const stage = this.$refs.rectsGroup.getStage().getStage();
-                            console.log(stage.findOne('#backgroundGroup').x());
-                            console.log(stage.findOne('#backgroundGroup').height());
-                            let x = stage.width() / 2;
-                            let y = 70;
-                            let radius = 50;
-                            let scale =
-                                radius / Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
-                            if (scale < 1)
-                                return {
-                                    y: Math.round((pos.y - y) * scale + y),
-                                    x: Math.round((pos.x - x) * scale + x)
-                                };
-                            else return pos;
-                        }
-                    },
-                    {
-                        fill: '#59a8da',
-                        opacity: 0.35,
-                        draggable: true
-                    },
-                    {
-                        fill: '#da2b29',
-                        opacity: 0.35,
-                        draggable: true
-                    }
-                ],
+                rectColors: ['#63da4f', '#59a8da', '#da2b29'],
                 transformer: {
                     keepRatio: false,
                     anchorSize: 6,
@@ -75,8 +72,12 @@
         },
         computed: {
             rectsList() {
-                const rectStyle = this.rectStyles[this.index] || {};
-                return this.list.map(item => Object.assign(item, rectStyle));
+                const selectColor = this.rectColors[this.index];
+                const selectStyle = {};
+                if (selectColor) {
+                    selectStyle.fill = selectColor;
+                }
+                return this.list.map(item => Object.assign(item, rectStyleBase, selectStyle));
             },
             selectedRectName() {
                 const rect = this.list.find(r => r.name === this.selected);
@@ -119,7 +120,8 @@
                 this.updateTransformer();
             }
         },
-        created() {}
+        created() {
+        }
     };
 </script>
 

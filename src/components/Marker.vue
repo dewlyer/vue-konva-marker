@@ -3,7 +3,7 @@
              @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp" @mousemove="handleStageMouseMove" 
              @mouseout="handleMouseOut" @dragstart="handleDragstart" @dragend="handleDragend">
 
-        <v-layer ref="backgroundLayer" :config="backgroundLayer">
+        <v-layer ref="backgroundLayer">
             <background-group :src="background"></background-group>
         </v-layer>
 
@@ -50,9 +50,6 @@
                     width: 0,
                     height: 0,
                     draggable: true
-                },
-                backgroundLayer: {
-                    id: 'backgroundLayer'
                 },
                 rectList: [
                     [
@@ -197,9 +194,10 @@
             },
             handleStageMouseDown(event) {
                 const target = event.target;
+                const parent = target.getParent();
                 const className = target.getClassName();
 
-                if (target.getParent().getClassName() !== 'Transformer') {
+                if (parent && parent.getClassName() !== 'Transformer') {
                     this.selectedRectName = className === 'Rect' ? target.name() : '';
                 }
 
