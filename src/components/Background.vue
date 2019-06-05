@@ -1,7 +1,7 @@
 <template>
-    <v-layer ref="backgroundLayer">
+    <v-group ref="backgroundGroup" :config="config">
         <v-image v-for="(item, index) in imageList" :key="index" :config="item"></v-image>
-    </v-layer>
+    </v-group>
 </template>
 
 <script>
@@ -11,7 +11,10 @@
         },
         data() {
             return {
-                imageList: []
+                imageList: [],
+                config: {
+                    id: 'backgroundGroup'
+                }
             };
         },
         watch: {

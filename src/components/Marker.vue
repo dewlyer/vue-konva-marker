@@ -3,7 +3,9 @@
              @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp" @mousemove="handleStageMouseMove" 
              @mouseout="handleMouseOut" @dragstart="handleDragstart" @dragend="handleDragend">
 
-        <background-layer :src="background"></background-layer>
+        <v-layer ref="backgroundLayer" :config="backgroundLayer">
+            <background-group :src="background"></background-group>
+        </v-layer>
 
         <v-layer ref="rectsLayer">
             <rects-group v-for="(item, index) in rectList" :key="index" :list="item" :index="index" :selected="selectedRectName"></rects-group>
@@ -22,12 +24,12 @@
 </template>
 
 <script>
-    import BackgroundLayer from './Background';
+    import backgroundGroup from './Background';
     import RectsGroup from './Rects';
 
     export default {
         components: {
-            BackgroundLayer,
+            backgroundGroup,
             RectsGroup
         },
         props: {
@@ -48,6 +50,9 @@
                     width: 0,
                     height: 0,
                     draggable: true
+                },
+                backgroundLayer: {
+                    id: 'backgroundLayer'
                 },
                 rectList: [
                     [

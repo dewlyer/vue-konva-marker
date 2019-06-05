@@ -30,7 +30,23 @@
                     {
                         fill: '#63da4f',
                         opacity: 0.35,
-                        draggable: true
+                        draggable: true,
+                        dragBoundFunc: pos => {
+                            const stage = this.$refs.rectsGroup.getStage().getStage();
+                            console.log(stage.findOne('#backgroundGroup').x());
+                            console.log(stage.findOne('#backgroundGroup').height());
+                            let x = stage.width() / 2;
+                            let y = 70;
+                            let radius = 50;
+                            let scale =
+                                radius / Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
+                            if (scale < 1)
+                                return {
+                                    y: Math.round((pos.y - y) * scale + y),
+                                    x: Math.round((pos.x - x) * scale + x)
+                                };
+                            else return pos;
+                        }
                     },
                     {
                         fill: '#59a8da',
