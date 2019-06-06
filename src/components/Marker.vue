@@ -1,6 +1,6 @@
 <template>
     <v-stage class="marker-stage" ref="stage" :config="stage"
-             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp" @mousemove="handleStageMouseMove" 
+             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp" @mousemove="handleStageMouseMove"
              @mouseout="handleMouseOut" @dragstart="handleDragstart" @dragend="handleDragend">
 
         <v-layer ref="backgroundLayer">
@@ -119,8 +119,10 @@
                 drawingRectStart: null,
                 drawingRectEnd: null,
                 text: {
-                    fontSize: 15,
-                    text: 'Some text on canvas',
+                    x: 5,
+                    y: 5,
+                    fontSize: 18,
+                    text: '在线格式化工具 DEMO',
                 }
             };
         },
@@ -189,8 +191,10 @@
                 this.$emit('drawend');
             },
             doDrawingRect(event) {
-                this.drawingRectEnd = this.getAbsolutePosition(event);
-                this.updateDrawingRect();
+                if (event.target !== event.currentTarget) {
+                    this.drawingRectEnd = this.getAbsolutePosition(event);
+                    this.updateDrawingRect();
+                }
             },
             handleStageMouseDown(event) {
                 const target = event.target;

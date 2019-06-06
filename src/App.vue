@@ -71,16 +71,17 @@
 
     .btn-wrapper {
         position: fixed;
-        left: 10px;
+        right: 10px;
         top: 10px;
         button {
-            margin: 3px;
-            padding: 5px 10px;
+            margin: 5px;
+            padding: 5px 12px;
             background: #666;
             border: 1px solid #666;
             color: #fff;
             opacity: 0.9;
             outline: none;
+            font-size: 14px;
         }
         .button-image {}
         .input-image {
