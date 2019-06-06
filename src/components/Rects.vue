@@ -35,13 +35,21 @@
         }
     };
 
-    function getStageCoordsRange(stage) {
+    function getGroupSizeByStage(stage) {
         const group = stage.findOne('.backgroundGroup');
+        return {
+            width: group.width(),
+            height: group.height()
+        };
+    }
+
+    function getStageCoordsRange(stage) {
+        const {width, height} = getGroupSizeByStage(stage);
         const offset = stage.getAbsolutePosition();
         const x = offset.x;
         const y = offset.y;
-        const w = offset.x + group.width();
-        const h = offset.y + group.height();
+        const w = offset.x + width;
+        const h = offset.y + height;
         return {x, y, w, h};
     }
 
@@ -77,18 +85,19 @@
                     // enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
                     boundBoxFunc(oldBoundBox, newBoundBox) {
                         const stage = this.getStage();
-                        const range = getStageCoordsRange(stage);
+                        const size = getGroupSizeByStage(stage);
 
                         if (newBoundBox.width <= RECT_MIN_PADDING || newBoundBox.height <= RECT_MIN_PADDING) {
                             console.log(1);
                             return oldBoundBox;
                         }
 
-                        if (newBoundBox.x < range.x || newBoundBox.x > range.w - newBoundBox.width) {
+                        if (newBoundBox.x < 0 || newBoundBox.x > size.width - newBoundBox.width) {
+                            console.log(2);
                             return oldBoundBox;
                         }
 
-                        if (newBoundBox.y < range.y || newBoundBox.y > range.h - newBoundBox.height) {
+                        if (newBoundBox.y < 0 || newBoundBox.y > size.height - newBoundBox.height) {
                             console.log(3);
                             return oldBoundBox;
                         }
