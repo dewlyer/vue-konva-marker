@@ -2,39 +2,48 @@
     <v-group ref="rectsGroup">
         <v-rect v-for="item in rectsList" :key="item.name" :config="item"
                 @mouseenter="rectMouseEnter" @mouseleave="rectMouseLeave"></v-rect>
-        <v-transformer ref="transformer" :config="transformer"></v-transformer>
+        <v-transformer ref="transformer" :config="transformer"
+                       @transform="handleTransform"></v-transformer>
     </v-group>
 </template>
 
 <script>
+    const RECT_MIN_PADDING = 20;
     let rectStyleBase = {
         fill: '#999',
         opacity: 0.35,
         draggable: true,
         dragBoundFunc(pos) {
             const stage = this.getStage();
-            const group = stage.findOne('.backgroundGroup');
-            const offset = stage.getAbsolutePosition();
-            const x = offset.x;
-            const y = offset.y;
-            const w = offset.x + group.width() - this.width();
-            const h = offset.y + group.height() - this.height();
+            const range = getStageCoordsRange(stage);
+            const w = this.width() * this.scaleX();
+            const h = this.height() * this.scaleY();
 
-            if (pos.x > w) {
-                pos.x = w;
-            } else if (pos.x < x) {
-                pos.x = x;
+            if (pos.x > range.w - w) {
+                pos.x = range.w - w;
+            } else if (pos.x < range.x) {
+                pos.x = range.x;
             }
 
-            if (pos.y > h) {
-                pos.y = h;
-            } else if (pos.y < y) {
-                pos.y = y;
+            if (pos.y > range.h - h) {
+                pos.y = range.h - h;
+            } else if (pos.y < range.y) {
+                pos.y = range.y;
             }
 
             return pos;
         }
     };
+
+    function getStageCoordsRange(stage) {
+        const group = stage.findOne('.backgroundGroup');
+        const offset = stage.getAbsolutePosition();
+        const x = offset.x;
+        const y = offset.y;
+        const w = offset.x + group.width();
+        const h = offset.y + group.height();
+        return {x, y, w, h};
+    }
 
     export default {
         props: {
@@ -64,8 +73,28 @@
                     borderStroke: '#be4f52',
                     borderDash: [4, 3],
                     rotateAnchorOffset: 40,
-                    // rotateEnabled: false,
+                    rotateEnabled: false,
                     // enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
+                    boundBoxFunc(oldBoundBox, newBoundBox) {
+                        const stage = this.getStage();
+                        const range = getStageCoordsRange(stage);
+
+                        if (newBoundBox.width <= RECT_MIN_PADDING || newBoundBox.height <= RECT_MIN_PADDING) {
+                            console.log(1);
+                            return oldBoundBox;
+                        }
+
+                        if (newBoundBox.x < range.x || newBoundBox.x > range.w - newBoundBox.width) {
+                            return oldBoundBox;
+                        }
+
+                        if (newBoundBox.y < range.y || newBoundBox.y > range.h - newBoundBox.height) {
+                            console.log(3);
+                            return oldBoundBox;
+                        }
+
+                        return newBoundBox;
+                    }
                 },
                 cursorStyle: 'default'
             };
@@ -113,6 +142,19 @@
                 }
 
                 transformerNode.getLayer().batchDraw();
+            },
+            handleTransform(event) {
+                const transformer = event.currentTarget;
+                const {layerX, layerY} = event.evt;
+                const range = getStageCoordsRange(transformer.getStage());
+
+                if (layerX < range.x || layerX > range.w) {
+                    transformer.stopTransform();
+                }
+
+                if (layerY < range.y || layerY > range.h) {
+                    transformer.stopTransform();
+                }
             }
         },
         watch: {
