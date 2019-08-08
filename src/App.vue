@@ -27,8 +27,7 @@
                 drawing: false
             }
         },
-        computed: {
-        },
+        computed: {},
         methods: {
             handleDrawStart(index) {
                 this.drawing = index;
@@ -55,41 +54,4 @@
     }
 </script>
 
-<style lang="scss">
-    html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        border: 0;
-    }
-
-    #app {
-        width: 100%;
-        height: 100%;
-    }
-
-    .btn-wrapper {
-        position: fixed;
-        right: 10px;
-        top: 10px;
-        button {
-            margin: 5px;
-            padding: 5px 12px;
-            background: #666;
-            border: 1px solid #666;
-            color: #fff;
-            opacity: 0.9;
-            outline: none;
-            font-size: 14px;
-        }
-        .button-image {}
-        .input-image {
-            width: 46px;
-            margin-left: -53px;
-            padding: 5px;
-            opacity: 0;
-            background: #c00;
-        }
-    }
-</style>
+<style src="./assets/app.scss"></style>
