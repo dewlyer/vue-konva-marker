@@ -1,13 +1,16 @@
 <template>
     <v-group ref="backgroundGroup" :config="config">
-        <v-image v-for="(item, index) in imageList" :key="index" :config="item"></v-image>
+        <v-image v-for="(item, index) in imageList" :key="index" :config="item"/>
     </v-group>
 </template>
 
 <script>
     export default {
         props: {
-            src: Array
+            src: {
+                type: Array,
+                required: true
+            }
         },
         data() {
             return {

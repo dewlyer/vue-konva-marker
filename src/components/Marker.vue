@@ -1,14 +1,16 @@
 <template>
     <v-stage class="marker-stage" ref="stage" :config="stage"
-             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp" @mousemove="handleStageMouseMove"
-             @mouseout="handleMouseOut" @dragstart="handleDragstart" @dragend="handleDragend">
+             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp"
+             @mousemove="handleStageMouseMove" @mouseout="handleMouseOut"
+             @dragstart="handleDragstart" @dragend="handleDragend">
 
         <v-layer ref="backgroundLayer">
             <background-group :src="background"></background-group>
         </v-layer>
 
         <v-layer ref="rectsLayer">
-            <rects-group v-for="(item, index) in rectList" :key="index" :list="item" :index="index" :selected="selectedRectName"></rects-group>
+            <rects-group v-for="(item, index) in rectList" :key="index"
+                         :list="item" :index="index" :selected="selectedRectName"></rects-group>
         </v-layer>
 
         <v-layer ref="drawLayer">
@@ -24,12 +26,13 @@
 </template>
 
 <script>
-    import backgroundGroup from './Background';
+    import BackgroundGroup from './Background';
     import RectsGroup from './Rects';
 
     export default {
+        name: 'paper-marker',
         components: {
-            backgroundGroup,
+            BackgroundGroup,
             RectsGroup
         },
         props: {
