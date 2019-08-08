@@ -1,12 +1,19 @@
 <template>
     <div id="app">
-        <paper-marker :background="background" :drawing="drawing" @drawend="handleDrawEnd"></paper-marker>
+        <paper-marker :background="background" :drawing="drawing"
+                      @drawend="handleDrawEnd"/>
         <div class="btn-wrapper">
-            <button type="button" class="button-draw" @click="handleDrawStart(1)">绿框</button>
-            <button type="button" class="button-draw" @click="handleDrawStart(2)">蓝框</button>
-            <button type="button" class="button-draw" @click="handleDrawStart(3)">红框</button>
-            <button type="button" class="button-image">换图</button>
-            <input type="file" class="input-image" @change="loadLocalImages" multiple>
+            <button type="button" class="button-draw"
+                    @click="handleDrawStart(1)">绿框</button>
+            <button type="button" class="button-draw"
+                    @click="handleDrawStart(2)">蓝框</button>
+            <button type="button" class="button-draw"
+                    @click="handleDrawStart(3)">红框</button>
+            <span>
+                <button type="button" class="button-image">换图</button>
+                <input type="file" class="input-image" multiple
+                       @change="loadLocalImages"/>
+            </span>
         </div>
     </div>
 </template>
@@ -54,4 +61,4 @@
     }
 </script>
 
-<style src="./assets/app.scss"></style>
+<style src="./assets/app.scss" lang="scss"></style>
