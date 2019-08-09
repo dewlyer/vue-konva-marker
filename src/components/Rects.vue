@@ -10,12 +10,8 @@
 </template>
 
 <script>
-    import {
-        RECT_MIN_PADDING,
-        rectStyleBase,
-        getGroupSizeByStage,
-        getStageCoordsRange
-    } from './Rects.module'
+    import {rectColors, rectConfig, transformerConfig, getStageCoordsRange} from './Rects.module'
+
     export default {
         props: {
             list: {
@@ -35,39 +31,8 @@
         },
         data() {
             return {
-                rectColors: ['#63da4f', '#59a8da', '#da2b29'],
-                transformer: {
-                    keepRatio: false,
-                    anchorSize: 6,
-                    anchorFill: '#e07575',
-                    anchorStroke: '#e07575',
-                    borderStroke: '#be4f52',
-                    borderDash: [4, 3],
-                    rotateAnchorOffset: 40,
-                    rotateEnabled: false,
-                    // enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right']
-                    boundBoxFunc(oldBoundBox, newBoundBox) {
-                        const stage = this.getStage();
-                        const size = getGroupSizeByStage(stage);
-
-                        if (newBoundBox.width <= RECT_MIN_PADDING || newBoundBox.height <= RECT_MIN_PADDING) {
-                            console.log(1);
-                            return oldBoundBox;
-                        }
-
-                        if (newBoundBox.x < 0 || newBoundBox.x > size.width - newBoundBox.width) {
-                            console.log(2);
-                            return oldBoundBox;
-                        }
-
-                        if (newBoundBox.y < 0 || newBoundBox.y > size.height - newBoundBox.height) {
-                            console.log(3);
-                            return oldBoundBox;
-                        }
-
-                        return newBoundBox;
-                    }
-                },
+                rectColors: rectColors,
+                transformer: transformerConfig,
                 cursorStyle: 'default'
             };
         },
@@ -78,7 +43,7 @@
                 if (selectColor) {
                     selectStyle.fill = selectColor;
                 }
-                return this.list.map(item => Object.assign(item, rectStyleBase, selectStyle));
+                return this.list.map(item => Object.assign(item, rectConfig, selectStyle));
             },
             selectedRectName() {
                 const rect = this.list.find(r => r.name === this.selected);
