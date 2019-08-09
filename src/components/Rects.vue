@@ -1,9 +1,7 @@
 <template>
     <v-group ref="rectsGroup">
-        <v-rect v-for="item in rectsList"
-                :key="item.name" :config="item"
-                @mouseenter="rectMouseEnter"
-                @mouseleave="rectMouseLeave"></v-rect>
+        <v-rect v-for="item in rectsList" :key="item.name" :config="item"
+                @mouseenter="handleRectMouseEnter" @mouseleave="handleRectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"
                        @transform="handleTransform"></v-transformer>
     </v-group>
@@ -51,16 +49,29 @@
             }
         },
         methods: {
-            rectMouseEnter(event) {
+            handleRectMouseEnter(event) {
                 const container = event.target.getStage().container();
                 if (container.style.cursor) {
                     this.cursorStyle = container.style.cursor;
                 }
                 container.style.cursor = 'move';
             },
-            rectMouseLeave(event) {
+            handleRectMouseLeave(event) {
                 const container = event.target.getStage().container();
                 container.style.cursor = this.cursorStyle;
+            },
+            handleTransform(event) {
+                const transformer = event.currentTarget;
+                const {layerX, layerY} = event.evt;
+                const range = getStageCoordsRange(transformer.getStage());
+
+                if (layerX < range.x || layerX > range.w) {
+                    transformer.stopTransform();
+                }
+
+                if (layerY < range.y || layerY > range.h) {
+                    transformer.stopTransform();
+                }
             },
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
@@ -79,19 +90,6 @@
                 }
 
                 transformerNode.getLayer().batchDraw();
-            },
-            handleTransform(event) {
-                const transformer = event.currentTarget;
-                const {layerX, layerY} = event.evt;
-                const range = getStageCoordsRange(transformer.getStage());
-
-                if (layerX < range.x || layerX > range.w) {
-                    transformer.stopTransform();
-                }
-
-                if (layerY < range.y || layerY > range.h) {
-                    transformer.stopTransform();
-                }
             }
         },
         watch: {
