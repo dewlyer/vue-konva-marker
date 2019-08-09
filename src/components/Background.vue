@@ -1,6 +1,6 @@
 <template>
     <v-group ref="backgroundGroup" :config="config">
-        <v-image v-for="(item, index) in imageList" :key="index" :config="item"/>
+        <v-image v-for="(item, index) in list" :key="index" :config="item"/>
     </v-group>
 </template>
 
@@ -14,12 +14,12 @@
         },
         data() {
             return {
-                imageList: [],
                 config: {
                     name: 'backgroundGroup',
                     width: 0,
                     height: 0
-                }
+                },
+                list: []
             };
         },
         watch: {
@@ -28,16 +28,17 @@
             }
         },
         methods: {
+            updateGroupConfig({x, y}, {width, height}) {
+                this.config.width = x;
+                this.config.height = Math.max(height, this.config.height);
+            },
             loadBackgroundImages() {
-                this.loadAllImages().then(imageList => {
-                    let x = 0, y = 0;
-                    this.imageList = imageList.map(image => {
-                        let config = {x, y, image};
-                        let width = image.width;
-                        let height = image.height;
-                        x += image.width;
-                        this.config.width = x;
-                        this.config.height = Math.max(height, this.config.height);
+                this.loadAllImages().then(images => {
+                    let coords = {x: 0, y: 0};
+                    this.list = images.map(image => {
+                        const config = {...coords, image};
+                        coords.x += image.width;
+                        this.updateGroupConfig(coords, image);
                         return config;
                     });
                 });
@@ -59,6 +60,3 @@
         }
     };
 </script>
-
-<style scoped lang="scss">
-</style>

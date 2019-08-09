@@ -1,58 +1,21 @@
 <template>
     <v-group ref="rectsGroup">
-        <v-rect v-for="item in rectsList" :key="item.name" :config="item"
-                @mouseenter="rectMouseEnter" @mouseleave="rectMouseLeave"></v-rect>
+        <v-rect v-for="item in rectsList"
+                :key="item.name" :config="item"
+                @mouseenter="rectMouseEnter"
+                @mouseleave="rectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"
                        @transform="handleTransform"></v-transformer>
     </v-group>
 </template>
 
 <script>
-    const RECT_MIN_PADDING = 20;
-    let rectStyleBase = {
-        fill: '#999',
-        opacity: 0.35,
-        draggable: true,
-        dragBoundFunc(pos) {
-            const stage = this.getStage();
-            const range = getStageCoordsRange(stage);
-            const w = this.width() * this.scaleX();
-            const h = this.height() * this.scaleY();
-
-            if (pos.x > range.w - w) {
-                pos.x = range.w - w;
-            } else if (pos.x < range.x) {
-                pos.x = range.x;
-            }
-
-            if (pos.y > range.h - h) {
-                pos.y = range.h - h;
-            } else if (pos.y < range.y) {
-                pos.y = range.y;
-            }
-
-            return pos;
-        }
-    };
-
-    function getGroupSizeByStage(stage) {
-        const group = stage.findOne('.backgroundGroup');
-        return {
-            width: group.width(),
-            height: group.height()
-        };
-    }
-
-    function getStageCoordsRange(stage) {
-        const {width, height} = getGroupSizeByStage(stage);
-        const offset = stage.getAbsolutePosition();
-        const x = offset.x;
-        const y = offset.y;
-        const w = offset.x + width;
-        const h = offset.y + height;
-        return {x, y, w, h};
-    }
-
+    import {
+        RECT_MIN_PADDING,
+        rectStyleBase,
+        getGroupSizeByStage,
+        getStageCoordsRange
+    } from './Rects.module'
     export default {
         props: {
             list: {
@@ -170,11 +133,6 @@
             selectedRectName() {
                 this.updateTransformer();
             }
-        },
-        created() {
         }
     };
 </script>
-
-<style scoped lang="scss">
-</style>

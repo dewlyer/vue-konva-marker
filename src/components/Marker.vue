@@ -5,12 +5,13 @@
              @dragstart="handleDragstart" @dragend="handleDragend">
 
         <v-layer ref="backgroundLayer">
-            <background-group :src="background"></background-group>
+            <background-group :src="background"/>
         </v-layer>
 
         <v-layer ref="rectsLayer">
-            <rects-group v-for="(item, index) in rectList" :key="index"
-                         :list="item" :index="index" :selected="selectedRectName"></rects-group>
+            <rects-group v-for="(item, index) in rectList"
+                         :key="index" :index="index" :list="item"
+                         :selected="selectedRectName"/>
         </v-layer>
 
         <v-layer ref="drawLayer">
@@ -26,8 +27,8 @@
 </template>
 
 <script>
-    import BackgroundGroup from './Background';
-    import RectsGroup from './Rects';
+    import BackgroundGroup from './Background'
+    import RectsGroup from './Rects'
 
     export default {
         name: 'paper-marker',
