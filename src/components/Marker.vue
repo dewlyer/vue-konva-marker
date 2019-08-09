@@ -1,7 +1,7 @@
 <template>
     <v-stage class="marker-stage" ref="stage" :config="stage"
              @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp"
-             @mousemove="handleStageMouseMove" @mouseout="handleMouseOut"
+             @mousemove="handleStageMouseMove" @mouseout="handleStageMouseOut"
              @dragstart="handleDragstart" @dragend="handleDragend">
 
         <v-layer ref="backgroundLayer">
@@ -18,11 +18,6 @@
             <v-rect :config="drawingRectWithStyle"></v-rect>
         </v-layer>
 
-        <v-layer ref="textLayer">
-            <v-text :config="text"></v-text>
-        </v-layer>
-
-        <v-layer ref="dragLayer"></v-layer>
     </v-stage>
 </template>
 
@@ -55,6 +50,7 @@
                     height: 0,
                     draggable: true
                 },
+
                 rectList: [
                     [
                         {
@@ -106,6 +102,7 @@
                     ]
                 ],
                 selectedRectName: '',
+
                 drawingRect: {
                     name: 'rectDrawing',
                     x: 0,
@@ -122,12 +119,7 @@
                 drawingRectVisible: false,
                 drawingRectStart: null,
                 drawingRectEnd: null,
-                text: {
-                    x: 5,
-                    y: 5,
-                    fontSize: 18,
-                    text: '在线格式化工具 DEMO',
-                }
+
             };
         },
         computed: {
@@ -138,10 +130,6 @@
             }
         },
         methods: {
-            updateStageSize() {
-                this.stage.width = window.innerWidth;
-                this.stage.height = window.innerHeight;
-            },
             createNewRect(index) {
                 const i = index - 1;
                 this.rectList[i].push(Object.assign({}, this.drawingRect, {
@@ -200,6 +188,11 @@
                     this.updateDrawingRect();
                 }
             },
+
+            updateStageSize() {
+                this.stage.width = window.innerWidth;
+                this.stage.height = window.innerHeight;
+            },
             handleStageMouseDown(event) {
                 const target = event.target;
                 const parent = target.getParent();
@@ -217,6 +210,11 @@
                     this.startDrawingRect(event);
                 }
             },
+            handleStageMouseUp(event) {
+                if (this.drawing) {
+                    this.endDrawingRect(event);
+                }
+            },
             handleStageMouseMove(event) {
                 if (this.drawing) {
                     this.doDrawingRect(event);
@@ -226,44 +224,12 @@
                 // const y = mousePos.y;
                 // this.text.text = 'X: ' + x + ', Y: ' + y;
             },
-            handleStageMouseUp(event) {
-                if (this.drawing) {
-                    this.endDrawingRect(event);
-                }
-            },
-            handleMouseOut() {
+            handleStageMouseOut() {
                 // this.text.text = 'Mouseout';
             },
             handleDragstart() {
-                // const shape = starComponent.getStage();
-                // const dragLayer = vm.$refs.dragLayer.getStage();
-                // const stage = vm.$refs.stage.getStage();
-                //
-                // // moving to another layer will improve dragging performance
-                // shape.moveTo(dragLayer);
-                // stage.draw();
-                //
-                // starComponent.config.shadowOffsetX = 15;
-                // starComponent.config.shadowOffsetY = 15;
-                // starComponent.config.scaleX = starComponent.config.startScale * 1.2;
-                // starComponent.config.scaleY = starComponent.config.startScale * 1.2;
             },
             handleDragend() {
-                // const shape = starComponent.getStage();
-                // const layer = vm.$refs.layer.getStage();
-                // const stage = vm.$refs.stage.getStage();
-                //
-                // shape.moveTo(layer);
-                // stage.draw();
-                //
-                // shape.to({
-                //   duration: 0.5,
-                //   easing: Konva.Easings.ElasticEaseOut,
-                //   scaleX: starComponent.config.startScale,
-                //   scaleY: starComponent.config.startScale,
-                //   shadowOffsetX: 5,
-                //   shadowOffsetY: 5
-                // });
             }
         },
         watch: {
