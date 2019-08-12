@@ -14,7 +14,7 @@
         </v-layer>
 
         <v-layer ref="drawLayer">
-            <v-rect :config="drawingRectConfig"></v-rect>
+            <draw-layer :config="drawingRect.config" :visible="drawingRect.visible"/>
         </v-layer>
 
     </v-stage>
@@ -23,6 +23,7 @@
 <script>
     import BackgroundGroup from './Background'
     import RectsGroup from './Rects'
+    import DrawLayer from './Draw'
 
     const RECT_LIST = [
         [
@@ -79,7 +80,8 @@
         name: 'paper-marker',
         components: {
             BackgroundGroup,
-            RectsGroup
+            RectsGroup,
+            DrawLayer
         },
         props: {
             background: {
@@ -103,18 +105,12 @@
                 rectList: RECT_LIST,
                 rectListSelectName: '',
                 drawingRect: {
-                    base: {
+                    config: {
                         name: 'rectDrawing',
                         x: 0,
                         y: 0,
                         width: 0,
                         height: 0
-                    },
-                    style: {
-                        opacity: 0.9,
-                        stroke: '#c00',
-                        strokeWidth: 1,
-                        dash: [5, 3]
                     },
                     visible: false,
                     start: null,
@@ -122,27 +118,12 @@
                 }
             };
         },
-        computed: {
-            drawingRectConfig() {
-                return {
-                    ...this.drawingRect.base,
-                    ...this.drawingRect.style,
-                    visible: this.drawingRect.visible
-                }
-            }
-        },
         methods: {
             updateStageSize() {
                 this.stageConfig.width = window.innerWidth;
                 this.stageConfig.height = window.innerHeight;
             },
-            createNewRect(index) {
-                const i = index - 1;
-                const rect = Object.assign({}, this.drawingRect.base, {
-                    name: `rect_${i}_${new Date().getTime()}`
-                });
-                this.rectList[i].push(rect);
-            },
+
             getAbsolutePosition(event) {
                 const stage = event.target.getStage();
                 return stage.getPointerPosition();
@@ -151,26 +132,32 @@
                 if (!this.drawingRect.start || !this.drawingRect.end) {
                     return;
                 }
-
                 let stage = this.$refs.stage.getStage();
                 let x = stage.x();
                 let y = stage.y();
                 let drawStart = this.drawingRect.start;
                 let drawEnd = this.drawingRect.end;
-                Object.assign(this.drawingRect.base, {
+                Object.assign(this.drawingRect.config, {
                     x: Math.min(drawStart.x, drawEnd.x) - x,
                     y: Math.min(drawStart.y, drawEnd.y) - y,
                     width: Math.abs(drawStart.x - drawEnd.x),
                     height: Math.abs(drawStart.y - drawEnd.y)
                 });
             },
+            createNewRect(index) {
+                const i = index - 1;
+                const rect = Object.assign({}, this.drawingRect.config, {
+                    name: `rect_${i}_${new Date().getTime()}`
+                });
+                this.rectList[i].push(rect);
+            },
             resetDrawingStatus() {
                 this.drawingRect.start = null;
                 this.drawingRect.end = null;
-                this.drawingRect.base.x = 0;
-                this.drawingRect.base.y = 0;
-                this.drawingRect.base.width = 0;
-                this.drawingRect.base.height = 0;
+                this.drawingRect.config.x = 0;
+                this.drawingRect.config.y = 0;
+                this.drawingRect.config.width = 0;
+                this.drawingRect.config.height = 0;
             },
 
             startDrawingRect(event) {
@@ -203,15 +190,12 @@
                 const target = event.target;
                 const parent = target.getParent();
                 const className = target.getClassName();
-
                 if (parent && parent.getClassName() !== 'Transformer') {
                     this.rectListSelectName = className === 'Rect' ? target.name() : '';
                 }
-
                 if (className !== 'Image') {
                     return;
                 }
-
                 this.startDrawingRect(event);
             },
             handleStageMouseUp(event) {
@@ -220,7 +204,7 @@
             handleStageMouseMove(event) {
                 this.doDrawingRect(event);
             },
-            handleStageMouseOut() {},
+            handleStageMouseOut() {}
         },
         watch: {
             drawing(value) {
