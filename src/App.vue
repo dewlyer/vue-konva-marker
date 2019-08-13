@@ -7,7 +7,7 @@
 
 <script>
     import Paper_A from './assets/paper_a.jpg'
-    import Paper_B from './assets/paper_b.jpg'
+    // import Paper_B from './assets/paper_b.jpg'
     import PaperMarker from './components/Marker'
     import PaperAction from './components/Action'
 
@@ -24,8 +24,8 @@
             }
         },
         created() {
-            this.background.push(Paper_A);
-            this.background.push(Paper_B);
+            const defaultBackground = [Paper_A/*, Paper_B*/];
+            this.handleBackgroundChange(defaultBackground);
         },
         methods: {
             handleDrawEnd() {

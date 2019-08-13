@@ -33,9 +33,12 @@ html, body {
   }
 
   .input-image {
-    width: 46px;
-    margin-left: -60px;
-    padding: 5px;
+    width: 28px;
+    height: 20px;
+    line-height: 20px;
+    margin: 5px 5px 5px -59px;
+    padding: 5px 12px;
+    border: 1px solid #fff;
     opacity: 0;
     background: #c00;
     cursor: pointer;
