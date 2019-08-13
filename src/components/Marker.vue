@@ -25,57 +25,6 @@
     import RectsGroup from './Rects'
     import DrawLayer from './Draw'
 
-    const RECT_LIST = [
-        [
-            {
-                name: 'recta1',
-                x: 120,
-                y: 120,
-                width: 100,
-                height: 100,
-            },
-            {
-                name: 'recta2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-            }
-        ],
-        [
-            {
-                name: 'rectb1',
-                x: 120,
-                y: 220,
-                width: 100,
-                height: 100,
-            },
-            {
-                name: 'rectb2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-            }
-        ],
-        [
-            {
-                name: 'rectc1',
-                x: 120,
-                y: 320,
-                width: 100,
-                height: 100,
-            },
-            {
-                name: 'rectc2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-            }
-        ]
-    ];
-
     export default {
         name: 'paper-marker',
         components: {
@@ -84,6 +33,12 @@
             DrawLayer
         },
         props: {
+            list: {
+                type: Array,
+                default() {
+                    return [];
+                }
+            },
             background: {
                 type: Array,
                 default() {
@@ -93,6 +48,10 @@
             drawing: {
                 type: [Number, Boolean],
                 default: false
+            },
+            scale: {
+                type: Number,
+                default: 1
             }
         },
         data() {
@@ -102,7 +61,7 @@
                     height: 0,
                     draggable: true
                 },
-                rectList: RECT_LIST,
+                rectList: [],
                 rectListSelectName: '',
                 drawingRect: {
                     config: {
@@ -126,15 +85,19 @@
 
             getAbsolutePosition(event) {
                 const stage = event.target.getStage();
-                return stage.getPointerPosition();
+                const {x, y} = stage.getPointerPosition();
+                return {
+                    x: x / this.scale,
+                    y: y / this.scale
+                };
             },
             updateDrawingRect() {
                 if (!this.drawingRect.start || !this.drawingRect.end) {
                     return;
                 }
                 let stage = this.$refs.stage.getStage();
-                let x = stage.x();
-                let y = stage.y();
+                let x = stage.x() / this.scale;
+                let y = stage.y() / this.scale;
                 let drawStart = this.drawingRect.start;
                 let drawEnd = this.drawingRect.end;
                 Object.assign(this.drawingRect.config, {
@@ -173,6 +136,7 @@
                 }
                 this.drawingRect.visible = false;
                 this.createNewRect(this.drawing);
+                this.$emit('change', this.rectList);
                 this.resetDrawingStatus();
                 this.$emit('drawend');
             },
@@ -211,11 +175,17 @@
                 const container = this.$refs.stage.getStage().container();
                 container.style.cursor = value ? 'crosshair' : 'default';
                 this.stageConfig.draggable = !value;
+            },
+            scale(value) {
+                const stage = this.$refs.stage.getStage();
+                stage.scale({x: value, y: value});
+                stage.draw();
             }
         },
         created() {
-            window.addEventListener('resize', this.updateStageSize);
+            this.rectList = this.list;
             this.updateStageSize();
+            window.addEventListener('resize', this.updateStageSize);
         }
     };
 </script>

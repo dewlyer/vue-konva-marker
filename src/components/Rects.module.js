@@ -22,13 +22,13 @@ export const transformerConfig = {
     boundBoxFunc
 };
 
-export function getStageCoordsRange(stage) {
+export function getStageCoordsRange(stage, scaleX, scaleY) {
     const {width, height} = getGroupSizeByStage(stage);
     const offset = stage.getAbsolutePosition();
     const x = offset.x;
     const y = offset.y;
-    const w = offset.x + width;
-    const h = offset.y + height;
+    const w = offset.x + width * scaleX;
+    const h = offset.y + height * scaleY;
     return {x, y, w, h};
 }
 
@@ -42,9 +42,11 @@ function getGroupSizeByStage(stage) {
 
 function dragBoundFunc(pos) {
     const stage = this.getStage();
-    const range = getStageCoordsRange(stage);
-    const w = this.width() * this.scaleX();
-    const h = this.height() * this.scaleY();
+    const scaleX = stage.scaleX();
+    const scaleY = stage.scaleY();
+    const range = getStageCoordsRange(stage, scaleX, scaleY);
+    const w = this.width() * this.scaleX() * scaleX;
+    const h = this.height() * this.scaleY() * scaleY;
     if (pos.x > range.w - w) {
         pos.x = range.w - w;
     } else if (pos.x < range.x) {
@@ -62,15 +64,12 @@ function boundBoxFunc(oldBoundBox, newBoundBox) {
     const stage = this.getStage();
     const size = getGroupSizeByStage(stage);
     if (newBoundBox.width <= RECT_MIN_PADDING || newBoundBox.height <= RECT_MIN_PADDING) {
-        console.log(1);
         return oldBoundBox;
     }
     if (newBoundBox.x < 0 || newBoundBox.x > size.width - newBoundBox.width) {
-        console.log(2);
         return oldBoundBox;
     }
     if (newBoundBox.y < 0 || newBoundBox.y > size.height - newBoundBox.height) {
-        console.log(3);
         return oldBoundBox;
     }
     return newBoundBox;
