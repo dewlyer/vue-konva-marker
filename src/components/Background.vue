@@ -36,7 +36,10 @@
                 this.loadAllImages().then(images => {
                     let coords = {x: 0, y: 0};
                     this.list = images.map(image => {
-                        const config = {...coords, image};
+                        const config = {
+                            ...coords,
+                            image
+                        };
                         coords.x += image.width;
                         this.updateGroupConfig(coords, image);
                         return config;

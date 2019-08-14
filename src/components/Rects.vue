@@ -1,7 +1,9 @@
 <template>
     <v-group ref="rectsGroup">
         <v-rect v-for="item in rectsList" :key="item.name" :config="item"
-                @mouseenter="handleRectMouseEnter" @mouseleave="handleRectMouseLeave"></v-rect>
+                @click="handleRectClick"
+                @mouseenter="handleRectMouseEnter"
+                @mouseleave="handleRectMouseLeave"></v-rect>
         <v-transformer ref="transformer" :config="transformer"
                        @transform="handleTransform"></v-transformer>
     </v-group>
@@ -49,6 +51,14 @@
             }
         },
         methods: {
+            handleRectClick(event) {
+                const targetRect = event.currentTarget;
+                const rectGroup = this.$refs.rectsGroup.getStage();
+                const rectLayer = targetRect.getLayer();
+                targetRect.moveToTop();
+                rectGroup.moveToTop();
+                rectLayer.draw();
+            },
             handleRectMouseEnter(event) {
                 const container = event.target.getStage().container();
                 if (container.style.cursor) {
@@ -76,8 +86,7 @@
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
                 const stage = transformerNode.getStage();
-                const {selectedRectName} = this;
-                const selectedNode = stage.findOne('.' + selectedRectName);
+                const selectedNode = stage.findOne('.' + this.selectedRectName);
 
                 if (selectedNode === transformerNode.node()) {
                     return;
