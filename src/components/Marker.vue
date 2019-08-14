@@ -179,7 +179,8 @@
             scale(value) {
                 const stage = this.$refs.stage.getStage();
                 stage.scale({x: value, y: value});
-                stage.draw();
+                // stage.draw();
+                stage.batchDraw();
             }
         },
         created() {

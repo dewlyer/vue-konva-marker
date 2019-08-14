@@ -19,6 +19,13 @@
                     width: 0,
                     height: 0
                 },
+                shadow: {
+                    shadowColor: 'black',
+                    shadowBlur: 15,
+                    shadowOffsetX: 15,
+                    shadowOffsetY: 15,
+                    shadowOpacity: 0.3,
+                },
                 list: []
             };
         },
@@ -32,11 +39,17 @@
                 this.config.width = x;
                 this.config.height = Math.max(height, this.config.height);
             },
+            resetGroupConfig() {
+                this.config.width = 0;
+                this.config.height = 0;
+                return this;
+            },
             loadBackgroundImages() {
-                this.loadAllImages().then(images => {
+                this.resetGroupConfig().loadAllImages().then(images => {
                     let coords = {x: 0, y: 0};
                     this.list = images.map(image => {
                         const config = {
+                            ...this.shadow,
                             ...coords,
                             image
                         };
