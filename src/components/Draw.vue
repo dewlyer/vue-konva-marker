@@ -1,5 +1,7 @@
 <template>
-    <v-rect :config="rectConfig"></v-rect>
+    <v-layer ref="drawLayer">
+        <v-rect :config="rectConfig"></v-rect>
+    </v-layer>
 </template>
 
 <script>

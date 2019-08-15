@@ -1,7 +1,9 @@
 <template>
-    <v-group ref="backgroundGroup" :config="config">
-        <v-image v-for="(item, index) in list" :key="index" :config="item"/>
-    </v-group>
+    <v-layer ref="backgroundLayer">
+        <v-group ref="backgroundGroup" :config="config">
+            <v-image v-for="(item, index) in list" :key="index" :config="item"/>
+        </v-group>
+    </v-layer>
 </template>
 
 <script>

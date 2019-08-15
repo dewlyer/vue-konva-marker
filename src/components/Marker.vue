@@ -3,34 +3,27 @@
              @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp"
              @mousemove="handleStageMouseMove" @mouseout="handleStageMouseOut">
 
-        <v-layer ref="backgroundLayer">
-            <background-group :src="background"/>
-        </v-layer>
+        <background-layer :src="background"/>
 
-        <v-layer ref="rectsLayer">
-            <rects-group v-for="(item, index) in rectList"
-                         :key="index" :index="index" :list="item"
-                         :selected="rectListSelectName"/>
-        </v-layer>
+        <rects-layer v-for="(item, index) in rectList" :key="index" :index="index"
+                     :list="item" :selected="rectListSelectName"/>
 
-        <v-layer ref="drawLayer">
-            <draw-layer :config="drawingRect.config" :visible="drawingRect.visible"/>
-        </v-layer>
+        <draw-layer :config="drawingRect.config" :visible="drawingRect.visible"/>
 
     </v-stage>
 </template>
 
 <script>
     import {mapGetters} from 'vuex'
-    import BackgroundGroup from './Background'
-    import RectsGroup from './Rects'
+    import BackgroundLayer from './Background'
+    import RectsLayer from './Rects'
     import DrawLayer from './Draw'
 
     export default {
         name: 'paper-marker',
         components: {
-            BackgroundGroup,
-            RectsGroup,
+            BackgroundLayer,
+            RectsLayer,
             DrawLayer
         },
         props: {

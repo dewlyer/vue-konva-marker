@@ -1,12 +1,14 @@
 <template>
-    <v-group ref="rectsGroup">
-        <v-rect v-for="item in rectsList" :key="item.name" :config="item"
-                @click="handleRectClick"
-                @mouseenter="handleRectMouseEnter"
-                @mouseleave="handleRectMouseLeave"></v-rect>
-        <v-transformer ref="transformer" :config="transformer"
-                       @transform="handleTransform"></v-transformer>
-    </v-group>
+    <v-layer ref="rectsLayer">
+        <v-group ref="rectsGroup">
+            <v-rect v-for="item in rectsList" :key="item.name" :config="item"
+                    @click="handleRectClick"
+                    @mouseenter="handleRectMouseEnter"
+                    @mouseleave="handleRectMouseLeave"></v-rect>
+            <v-transformer ref="transformer" :config="transformer"
+                           @transform="handleTransform"></v-transformer>
+        </v-group>
+    </v-layer>
 </template>
 
 <script>
