@@ -13,7 +13,7 @@
     import {mapGetters} from 'vuex'
 
     const COLORS = ['绿框', '蓝框', '红框'];
-    const STAGE_SCALE = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
+    const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
     export default {
         name: 'paper-action',

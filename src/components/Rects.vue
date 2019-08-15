@@ -4,10 +4,10 @@
             <v-rect v-for="item in rects" :key="item.name" :config="item"
                     @mouseenter="handleRectMouseEnter"
                     @mouseleave="handleRectMouseLeave"
-                    @click="handleRectClick"></v-rect>
-            <v-transformer ref="transformer" :config="transformer"
-                           @transform="handleTransform"></v-transformer>
+                    @click="handleRectClick">
+            </v-rect>
         </v-group>
+        <v-transformer ref="transformer" :config="transformer" @transform="handleTransform"></v-transformer>
     </v-layer>
 </template>
 

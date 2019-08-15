@@ -6,7 +6,6 @@
 
 <script>
     export default {
-        name: 'draw',
         props: {
             config: {
                 type: Object,
