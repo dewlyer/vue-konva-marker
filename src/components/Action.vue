@@ -44,11 +44,11 @@
                 let nextScaleIndex = this.currentScaleIndex + step;
                 if (nextScaleIndex >= 0 && nextScaleIndex < this.stageScale.length) {
                     this.currentScale = this.stageScale[nextScaleIndex];
-                    this.$store.commit('updateScale', this.currentScale);
+                    this.$store.commit('marker/updateScale', {scale: this.currentScale});
                 }
             },
             handleDrawStart(index) {
-                this.$store.commit('toggleDrawing', index + 1);
+                this.$store.commit('marker/toggleDrawing', {drawing: index + 1});
             },
             loadLocalImages(e) {
                 this.readAllImageFiles(e.target.files).then(files => {

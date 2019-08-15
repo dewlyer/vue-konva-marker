@@ -79,7 +79,6 @@
                 this.stageConfig.width = window.innerWidth;
                 this.stageConfig.height = window.innerHeight;
             },
-
             getAbsolutePosition(event) {
                 const stage = event.target.getStage();
                 const {x, y} = stage.getPointerPosition();
@@ -119,7 +118,6 @@
                 this.drawingRect.config.width = 0;
                 this.drawingRect.config.height = 0;
             },
-
             startDrawingRect(event) {
                 if (!this.drawing) {
                     return;
@@ -135,7 +133,9 @@
                 this.createNewRect(this.drawing);
                 this.$emit('change', this.rectList);
                 this.resetDrawingStatus();
-                this.$store.commit('toggleDrawing', false);
+                this.$store.commit('marker/toggleDrawing', {
+                    drawing: false
+                });
             },
             doDrawingRect(event) {
                 if (!this.drawing) {
@@ -146,7 +146,6 @@
                     this.updateDrawingRect();
                 }
             },
-
             handleStageMouseDown(event) {
                 const target = event.target;
                 const parent = target.getParent();
@@ -176,8 +175,8 @@
             scale(value) {
                 const stage = this.$refs.stage.getStage();
                 stage.scale({x: value, y: value});
-                // stage.draw();
                 stage.batchDraw();
+                // stage.draw();
             }
         },
         created() {

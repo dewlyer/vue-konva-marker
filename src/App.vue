@@ -6,22 +6,22 @@
 </template>
 
 <script>
-    import Paper_A from './assets/paper_a.jpg'
-    import Paper_B from './assets/paper_b.jpg'
     import PaperMarker from './components/Marker'
     import PaperAction from './components/Action'
+    import Paper_A from './assets/paper_a.jpg'
+    import Paper_B from './assets/paper_b.jpg'
 
     const RECT_LIST = [
         [
             {
-                name: 'recta1',
+                name: 'rect_a_1',
                 x: 120,
                 y: 120,
                 width: 100,
                 height: 100,
             },
             {
-                name: 'recta2',
+                name: 'rect_a_2',
                 x: 550,
                 y: 180,
                 width: 300,
@@ -30,14 +30,14 @@
         ],
         [
             {
-                name: 'rectb1',
+                name: 'rect_b_1',
                 x: 120,
                 y: 220,
                 width: 100,
                 height: 100,
             },
             {
-                name: 'rectb2',
+                name: 'rect_b_2',
                 x: 550,
                 y: 180,
                 width: 300,
@@ -46,14 +46,14 @@
         ],
         [
             {
-                name: 'rectc1',
+                name: 'rect_c_1',
                 x: 120,
                 y: 320,
                 width: 100,
                 height: 100,
             },
             {
-                name: 'rectc2',
+                name: 'rect_c_2',
                 x: 550,
                 y: 180,
                 width: 300,
