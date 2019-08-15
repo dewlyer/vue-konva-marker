@@ -1,10 +1,10 @@
 <template>
     <v-layer ref="rectsLayer">
-        <v-group ref="rectsGroup">
-            <v-rect v-for="item in rectsList" :key="item.name" :config="item"
-                    @click="handleRectClick"
+        <v-group v-for="(rects, index) in rectsList" :key="index">
+            <v-rect v-for="item in rects" :key="item.name" :config="item"
                     @mouseenter="handleRectMouseEnter"
-                    @mouseleave="handleRectMouseLeave"></v-rect>
+                    @mouseleave="handleRectMouseLeave"
+                    @click="handleRectClick"></v-rect>
             <v-transformer ref="transformer" :config="transformer"
                            @transform="handleTransform"></v-transformer>
         </v-group>
@@ -12,7 +12,10 @@
 </template>
 
 <script>
-    import {rectColors, rectConfig, transformerConfig, getStageCoordsRange} from './Rects.module'
+    import {
+        rectColors, rectConfig, transformerConfig,
+        getStageCoordsRange
+    } from './Rects.module'
 
     export default {
         props: {
@@ -21,10 +24,6 @@
                 default() {
                     return [];
                 }
-            },
-            index: {
-                type: Number,
-                default: 0
             },
             selected: {
                 type: String,
@@ -40,26 +39,38 @@
         },
         computed: {
             rectsList() {
-                const selectColor = this.rectColors[this.index];
+                return this.list.map((rects, index) => this.getListEx(rects, index));
+            },
+            selectedRect() {
+                let isInList = false;
+                this.list.forEach(rects => {
+                    if (rects.find(r => r.name === this.selected)) {
+                        isInList = true;
+                    }
+                });
+                return isInList ? this.selected : '';
+            }
+        },
+        methods: {
+            getListEx(rects, index) {
+                if (!rects) {
+                    return [];
+                }
+
+                const selectColor = this.rectColors[index];
                 const selectStyle = {};
                 if (selectColor) {
                     selectStyle.fill = selectColor;
                 }
-                return this.list.map(item => Object.assign(item, rectConfig, selectStyle));
+                return rects.map(item => Object.assign(item, rectConfig, selectStyle));
             },
-            selectedRectName() {
-                const rect = this.list.find(r => r.name === this.selected);
-                return !rect ? '' : this.selected;
-            }
-        },
-        methods: {
             handleRectClick(event) {
                 const targetRect = event.currentTarget;
-                const rectGroup = this.$refs.rectsGroup.getStage();
+                const rectGroup = targetRect.getParent();
                 const rectLayer = targetRect.getLayer();
                 targetRect.moveToTop();
                 rectGroup.moveToTop();
-                rectLayer.draw();
+                rectLayer.batchDraw();
             },
             handleRectMouseEnter(event) {
                 const container = event.target.getStage().container();
@@ -88,7 +99,7 @@
             updateTransformer() {
                 const transformerNode = this.$refs.transformer.getStage();
                 const stage = transformerNode.getStage();
-                const selectedNode = stage.findOne('.' + this.selectedRectName);
+                const selectedNode = stage.findOne('.' + this.selectedRect);
 
                 if (selectedNode === transformerNode.node()) {
                     return;
@@ -104,7 +115,7 @@
             }
         },
         watch: {
-            selectedRectName() {
+            selectedRect() {
                 this.updateTransformer();
             }
         }

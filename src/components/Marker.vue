@@ -5,8 +5,7 @@
 
         <background-layer :src="background"/>
 
-        <rects-layer v-for="(item, index) in rectList" :key="index" :index="index"
-                     :list="item" :selected="rectListSelectName"/>
+        <rects-layer :list="rectList" :selected="rectSelected"/>
 
         <draw-layer :config="drawingRect.config" :visible="drawingRect.visible"/>
 
@@ -48,7 +47,7 @@
                     draggable: true
                 },
                 rectList: [],
-                rectListSelectName: '',
+                rectSelected: '',
                 drawingRect: {
                     config: {
                         name: 'rectDrawing',
@@ -144,7 +143,7 @@
                 const parent = target.getParent();
                 const className = target.getClassName();
                 if (parent && parent.getClassName() !== 'Transformer') {
-                    this.rectListSelectName = className === 'Rect' ? target.name() : '';
+                    this.rectSelected = className === 'Rect' ? target.name() : '';
                 }
                 if (className !== 'Image') {
                     return;
