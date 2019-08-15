@@ -14,6 +14,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
     import Paper_A from './assets/paper_a.jpg'
     import Paper_B from './assets/paper_b.jpg'
     import PaperMarker from './components/Marker'
@@ -79,9 +80,7 @@
         data() {
             return {
                 list: [],
-                background: [],
-                drawing: false,
-                scale: 1
+                background: []
             }
         },
         created() {
@@ -89,6 +88,10 @@
             this.list = RECT_LIST;
             this.handleBackgroundChange(defaultBackground);
         },
+        computed: mapGetters({
+            drawing: 'marker/drawing',
+            scale: 'marker/scale'
+        }),
         methods: {
             handleDrawEnd() {
                 this.drawing = false;

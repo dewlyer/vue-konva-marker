@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueKonva from 'vue-konva'
 import App from './App'
-import store from './store/store'
+import store from './store'
 
 Vue.config.performance = true;
 
