@@ -5,7 +5,7 @@
 
         <background-layer :src="background"/>
 
-        <rects-layer :list="rectList" :selected="rectSelected"/>
+        <rects-layer :list="rectList"/>
 
         <draw-layer :config="drawingRect.config" :visible="drawingRect.visible"/>
 
@@ -47,7 +47,6 @@
                     draggable: true
                 },
                 rectList: [],
-                rectSelected: '',
                 drawingRect: {
                     config: {
                         name: 'rectDrawing',
@@ -140,14 +139,12 @@
             },
             handleStageMouseDown(event) {
                 const target = event.target;
-                const parent = target.getParent();
                 const className = target.getClassName();
-                if (parent && parent.getClassName() !== 'Transformer') {
-                    this.rectSelected = className === 'Rect' ? target.name() : '';
-                }
+
                 if (className !== 'Image') {
                     return;
                 }
+
                 this.startDrawingRect(event);
             },
             handleStageMouseUp(event) {

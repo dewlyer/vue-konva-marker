@@ -2,12 +2,13 @@
     <v-layer ref="rectsLayer">
         <v-group v-for="(rects, index) in rectsList" :key="index">
             <v-rect v-for="item in rects" :key="item.name" :config="item"
+                    @mousedown="handleRectMouseDown"
                     @mouseenter="handleRectMouseEnter"
                     @mouseleave="handleRectMouseLeave"
                     @click="handleRectClick">
             </v-rect>
+            <v-transformer :config="transformer" @transform="handleTransform"></v-transformer>
         </v-group>
-        <v-transformer ref="transformer" :config="transformer" @transform="handleTransform"></v-transformer>
     </v-layer>
 </template>
 
@@ -25,10 +26,6 @@
                     return [];
                 }
             },
-            selected: {
-                type: String,
-                default: ''
-            }
         },
         data() {
             return {
@@ -40,15 +37,6 @@
         computed: {
             rectsList() {
                 return this.list.map((rects, index) => this.getListEx(rects, index));
-            },
-            selectedRect() {
-                let isInList = false;
-                this.list.forEach(rects => {
-                    if (rects.find(r => r.name === this.selected)) {
-                        isInList = true;
-                    }
-                });
-                return isInList ? this.selected : '';
             }
         },
         methods: {
@@ -71,6 +59,25 @@
                 targetRect.moveToTop();
                 rectGroup.moveToTop();
                 rectLayer.batchDraw();
+            },
+            handleRectMouseDown(event) {
+                const target = event.target;
+                const parent = target.getParent();
+                const className = target.getClassName();
+
+                if (!parent || parent.getClassName() === 'Transformer') {
+                    return;
+                }
+
+                if (className !== 'Rect') {
+                    return;
+                }
+
+                const transformerNode = parent.findOne('Transformer');
+                const selectedRect = target.name();
+
+                target.getLayer().find('Transformer').detach();
+                this.updateTransformer(transformerNode, selectedRect);
             },
             handleRectMouseEnter(event) {
                 const container = event.target.getStage().container();
@@ -96,10 +103,9 @@
                     transformer.stopTransform();
                 }
             },
-            updateTransformer() {
-                const transformerNode = this.$refs.transformer.getStage();
+            updateTransformer(transformerNode, selectedRect) {
                 const stage = transformerNode.getStage();
-                const selectedNode = stage.findOne('.' + this.selectedRect);
+                const selectedNode = stage.findOne('.' + selectedRect);
 
                 if (selectedNode === transformerNode.node()) {
                     return;
@@ -112,11 +118,6 @@
                 }
 
                 transformerNode.getLayer().batchDraw();
-            }
-        },
-        watch: {
-            selectedRect() {
-                this.updateTransformer();
             }
         }
     };
