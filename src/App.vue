@@ -1,20 +1,11 @@
 <template>
     <div class="app-wrapper">
-        <paper-marker :list="list"
-                      :scale="scale"
-                      :drawing="drawing"
-                      :background="background"
-                      @change="handleDataChange"
-                      @drawend="handleDrawEnd"/>
-        <paper-action :scale="scale"
-                      @drawstart="handleDrawStart"
-                      @scale="handleStageScale"
-                      @change="handleBackgroundChange"/>
+        <paper-marker :list="list" :background="background" @change="updateDataList"/>
+        <paper-action @change="updateBackground"/>
     </div>
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
     import Paper_A from './assets/paper_a.jpg'
     import Paper_B from './assets/paper_b.jpg'
     import PaperMarker from './components/Marker'
@@ -84,28 +75,14 @@
             }
         },
         created() {
-            const defaultBackground = [Paper_A, Paper_B];
-            this.list = RECT_LIST;
-            this.handleBackgroundChange(defaultBackground);
+            this.updateBackground([Paper_A, Paper_B]);
+            this.updateDataList(RECT_LIST);
         },
-        computed: mapGetters({
-            drawing: 'marker/drawing',
-            scale: 'marker/scale'
-        }),
         methods: {
-            handleDrawEnd() {
-                this.drawing = false;
-            },
-            handleDrawStart(index) {
-                this.drawing = index;
-            },
-            handleStageScale(value) {
-                this.scale = value;
-            },
-            handleBackgroundChange(files) {
+            updateBackground(files) {
                 this.background = files;
             },
-            handleDataChange(list) {
+            updateDataList(list) {
                 this.list = list;
             }
         }

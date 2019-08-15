@@ -21,6 +21,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
     import BackgroundGroup from './Background'
     import RectsGroup from './Rects'
     import DrawLayer from './Draw'
@@ -44,14 +45,6 @@
                 default() {
                     return [];
                 }
-            },
-            drawing: {
-                type: [Number, Boolean],
-                default: false
-            },
-            scale: {
-                type: Number,
-                default: 1
             }
         },
         data() {
@@ -77,6 +70,10 @@
                 }
             };
         },
+        computed: mapGetters({
+            drawing: 'marker/drawing',
+            scale: 'marker/scale'
+        }),
         methods: {
             updateStageSize() {
                 this.stageConfig.width = window.innerWidth;
@@ -138,7 +135,7 @@
                 this.createNewRect(this.drawing);
                 this.$emit('change', this.rectList);
                 this.resetDrawingStatus();
-                this.$emit('drawend');
+                this.$store.commit('toggleDrawing', false);
             },
             doDrawingRect(event) {
                 if (!this.drawing) {
