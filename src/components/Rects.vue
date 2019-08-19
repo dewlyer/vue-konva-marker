@@ -5,8 +5,12 @@
                     @mousedown="handleRectMouseDown"
                     @mouseenter="handleRectMouseEnter"
                     @mouseleave="handleRectMouseLeave"
+                    @dblclick="handleRectDbClick"
                     @click="handleRectClick">
             </v-rect>
+            <v-transformer :config="transformer" @transform="handleTransform"></v-transformer>
+        </v-group>
+        <v-group ref="selectGroup" :config="selectGroupConfig">
             <v-transformer :config="transformer" @transform="handleTransform"></v-transformer>
         </v-group>
     </v-layer>
@@ -31,7 +35,12 @@
             return {
                 rectColors: rectColors,
                 transformer: transformerConfig,
-                cursorStyle: 'default'
+                cursorStyle: 'default',
+                selectGroupConfig: {
+                    x: 0,
+                    y: 0,
+                    draggable: true
+                }
             };
         },
         computed: {
@@ -59,6 +68,15 @@
                 targetRect.moveToTop();
                 rectGroup.moveToTop();
                 rectLayer.batchDraw();
+            },
+            handleRectDbClick(event) {
+                const rectsLayer = this.$refs.rectsLayer.getStage();
+                const selectGroup = this.$refs.selectGroup.getStage();
+                const target = event.target;
+                console.log(target);
+                target.draggable(false);
+                target.moveTo(selectGroup);
+                rectsLayer.draw();
             },
             handleRectMouseDown(event) {
                 const target = event.target;

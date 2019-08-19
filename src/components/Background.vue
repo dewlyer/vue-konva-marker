@@ -1,7 +1,7 @@
 <template>
     <v-layer ref="backgroundLayer">
         <v-group ref="backgroundGroup" :config="config">
-            <v-image v-for="(item, index) in list" :key="index" :config="item"/>
+            <v-image v-for="(item, index) in list" :key="index" :config="item"></v-image>
         </v-group>
     </v-layer>
 </template>
@@ -37,7 +37,7 @@
             }
         },
         methods: {
-            updateGroupConfig({x, y}, {width, height}) {
+            updateGroupConfig({x}, {height}) {
                 this.config.width = x;
                 this.config.height = Math.max(height, this.config.height);
             },
