@@ -72,9 +72,13 @@
             handleRectDbClick(event) {
                 const rectsLayer = this.$refs.rectsLayer.getStage();
                 const selectGroup = this.$refs.selectGroup.getStage();
+                const {x, y} = selectGroup.getPosition();
                 const target = event.target;
-                console.log(target);
+                // console.log(target);
+                // console.log(selectGroup.absolutePosition());
+                // console.log(selectGroup.getPosition());
                 target.draggable(false);
+                target.move({x: -x, y: -y});
                 target.moveTo(selectGroup);
                 rectsLayer.draw();
             },
