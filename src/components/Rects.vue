@@ -1,11 +1,10 @@
 <template>
     <v-layer ref="rectsLayer">
-        <v-group v-for="(rects, index) in rectsList" :key="index">
+        <v-group ref="originGroup" v-for="(rects, index) in rectsList" :key="index">
             <v-rect v-for="item in rects" :key="item.name" :config="item"
-                    @mousedown="handleRectMouseDown"
+                    @mousedown="handleRectMouseDown($event, index)"
                     @mouseenter="handleRectMouseEnter"
                     @mouseleave="handleRectMouseLeave"
-                    @dblclick="handleRectDbClick"
                     @click="handleRectClick">
             </v-rect>
             <v-transformer :config="transformer" @transform="handleTransform"></v-transformer>
@@ -37,6 +36,7 @@
                 transformer: transformerConfig,
                 cursorStyle: 'default',
                 selectGroupConfig: {
+                    id: 'selectGroup',
                     x: 0,
                     y: 0,
                     draggable: true
@@ -69,23 +69,49 @@
                 rectGroup.moveToTop();
                 rectLayer.batchDraw();
             },
-            handleRectDbClick(event) {
+            handleRectCtrlClick(event, groupIndex) {
+                console.log(1)
                 const rectsLayer = this.$refs.rectsLayer.getStage();
                 const selectGroup = this.$refs.selectGroup.getStage();
                 const {x, y} = selectGroup.getPosition();
                 const target = event.target;
-                // console.log(target);
+                const parent = target.getParent();
+                const parentId = parent.id();
+
+                target.getLayer().find('Transformer').detach();
+
+                let originIndex = '';
+                let originGroup = null;
+
+                // console.log(parent);
+                // console.log(parentId);
                 // console.log(selectGroup.absolutePosition());
                 // console.log(selectGroup.getPosition());
-                target.draggable(false);
-                target.move({x: -x, y: -y});
-                target.moveTo(selectGroup);
+
+                if (parentId === 'selectGroup') {
+                    originIndex = target.getAttr('origin-group-index');
+                    originGroup = this.$refs.originGroup[originIndex].getStage();
+                    target.draggable(true);
+                    target.move({x: x, y: y});
+                    target.moveTo(originGroup);
+                } else {
+                    target.setAttr('origin-group-index', groupIndex);
+                    target.draggable(false);
+                    target.move({x: -x, y: -y});
+                    target.moveTo(selectGroup);
+                }
+
                 rectsLayer.draw();
             },
-            handleRectMouseDown(event) {
+            handleRectMouseDown(event, groupIndex) {
                 const target = event.target;
                 const parent = target.getParent();
                 const className = target.getClassName();
+
+                if (event.evt.ctrlKey) {
+                    this.handleRectCtrlClick(event, groupIndex);
+                    return;
+                }
 
                 if (!parent || parent.getClassName() === 'Transformer') {
                     return;
