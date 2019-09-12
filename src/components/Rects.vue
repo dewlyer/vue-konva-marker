@@ -92,11 +92,13 @@
                     originIndex = target.getAttr('origin-group-index');
                     originGroup = this.$refs.originGroup[originIndex].getStage();
                     target.draggable(true);
+                    target.setAttr('opacity', 0.35);
                     target.move({x: x, y: y});
                     target.moveTo(originGroup);
                 } else {
                     target.setAttr('origin-group-index', groupIndex);
                     target.draggable(false);
+                    target.setAttr('opacity', 0.6);
                     target.move({x: -x, y: -y});
                     target.moveTo(selectGroup);
                 }
