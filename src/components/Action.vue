@@ -1,12 +1,10 @@
-<template>
-    <div class="btn-wrapper">
-        <input type="button" class="button-draw" value="放大" @click="handleStageScaleChange(1)"/>
-        <input type="button" class="button-draw" value="缩小" @click="handleStageScaleChange(-1)"/>
-        <input type="button" class="button-draw" v-for="(item, index) in colors" :key="index" :value="item"
-               @click="handleDrawStart(index)"/>
-        <input type="button" class="button-draw button-image" value="换图"/>
-        <input type="file" class="input-image" multiple @change="loadLocalImages"/>
-    </div>
+<template lang="pug">
+    .btn-wrapper
+        input.button-draw(type='button', value='放大', @click='handleStageScaleChange(1)')
+        input.button-draw(type='button', value='缩小', @click='handleStageScaleChange(-1)')
+        input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item', @click='handleDrawStart(index)')
+        input.button-draw.button-image(type='button', value='换图')
+        input.input-image(type='file', multiple='', @change='loadLocalImages')
 </template>
 
 <script>

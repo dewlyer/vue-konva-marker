@@ -1,8 +1,7 @@
-<template>
-    <div class="app-wrapper">
-        <paper-marker :list="list" :background="background" @change="updateDataList"/>
-        <paper-action @change="updateBackground"/>
-    </div>
+<template lang="pug">
+    .app-wrapper
+        paper-marker(:list='list', :background='background', @change='updateDataList')
+        paper-action(@change='updateBackground')
 </template>
 
 <script>

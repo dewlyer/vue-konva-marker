@@ -9,8 +9,10 @@ Vue.config.productionTip = false;
 
 Vue.use(VueKonva);
 
-new Vue({
+const app = new Vue({
     store,
     el: '#app',
     render: h => h(App)
 });
+
+console.log(app);

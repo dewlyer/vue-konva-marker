@@ -1,18 +1,14 @@
-<template>
-    <v-layer ref="rectsLayer">
-        <v-group ref="originGroup" v-for="(rects, index) in rectsList" :key="index">
-            <v-rect v-for="item in rects" :key="item.name" :config="item"
-                    @mousedown="handleRectMouseDown($event, index)"
-                    @mouseenter="handleRectMouseEnter"
-                    @mouseleave="handleRectMouseLeave"
-                    @click="handleRectClick">
-            </v-rect>
-            <v-transformer :config="transformer" @transform="handleTransform"></v-transformer>
-        </v-group>
-        <v-group ref="selectGroup" :config="selectGroupConfig">
-            <v-transformer :config="transformer" @transform="handleTransform"></v-transformer>
-        </v-group>
-    </v-layer>
+<template lang="pug">
+    v-layer(ref='rectsLayer')
+        v-group(ref='originGroup', v-for='(rects, index) in rectsList', :key='index')
+            v-rect(v-for='item in rects', :key='item.name', :config='item',
+                @mousedown='handleRectMouseDown($event, index)',
+                @mouseenter='handleRectMouseEnter',
+                @mouseleave='handleRectMouseLeave',
+                @click='handleRectClick')
+            v-transformer(:config='transformer', @transform='handleTransform')
+        v-group(ref='selectGroup', :config='selectGroupConfig')
+            v-transformer(:config='transformer', @transform='handleTransform')
 </template>
 
 <script>

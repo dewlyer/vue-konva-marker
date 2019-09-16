@@ -1,9 +1,7 @@
-<template>
-    <v-layer ref="backgroundLayer">
-        <v-group ref="backgroundGroup" :config="config">
-            <v-image v-for="(item, index) in list" :key="index" :config="item"></v-image>
-        </v-group>
-    </v-layer>
+<template lang="pug">
+    v-layer(ref='backgroundLayer')
+        v-group(ref='backgroundGroup', :config='config')
+            v-image(v-for='(item, index) in list', :key='index', :config='item')
 </template>
 
 <script>

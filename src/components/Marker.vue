@@ -1,15 +1,10 @@
-<template>
-    <v-stage class="marker-stage" ref="stage" :config="stageConfig"
-             @mousedown="handleStageMouseDown" @mouseup="handleStageMouseUp"
-             @mousemove="handleStageMouseMove" @mouseout="handleStageMouseOut">
-
-        <background-layer :src="background"/>
-
-        <rects-layer :list="rectList"/>
-
-        <draw-layer :config="drawingRect.config" :visible="drawingRect.visible"/>
-
-    </v-stage>
+<template lang="pug">
+    v-stage.marker-stage(ref='stage', :config='stageConfig',
+        @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
+        @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
+        background-layer(:src='background')
+        rects-layer(:list='rectList')
+        draw-layer(:config='drawingRect.config', :visible='drawingRect.visible')
 </template>
 
 <script>

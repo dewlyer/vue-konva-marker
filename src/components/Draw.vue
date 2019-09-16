@@ -1,7 +1,6 @@
-<template>
-    <v-layer ref="drawLayer">
-        <v-rect :config="rectConfig"></v-rect>
-    </v-layer>
+<template lang="pug">
+    v-layer(ref='drawLayer')
+        v-rect(:config='rectConfig')
 </template>
 
 <script>
