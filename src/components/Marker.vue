@@ -4,7 +4,7 @@
         @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
         background-layer(:src='background')
         rects-layer(:list='rectList')
-        draw-layer(:config='drawingRect.config', :visible='drawingRect.visible')
+        draw-layer(:rect='drawingRect')
 </template>
 
 <script>

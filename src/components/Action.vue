@@ -28,16 +28,13 @@
                 scale: 'marker/scale'
             }),
             currentScaleIndex() {
-                return this.getIndexOfStageScale(this.currentScale);
+                return this.stageScale.indexOf(this.currentScale);
             }
         },
         created() {
             this.currentScale = this.scale;
         },
         methods: {
-            getIndexOfStageScale(scale) {
-                return this.stageScale.indexOf(scale);
-            },
             handleStageScaleChange(step) {
                 let nextScaleIndex = this.currentScaleIndex + step;
                 if (nextScaleIndex >= 0 && nextScaleIndex < this.stageScale.length) {

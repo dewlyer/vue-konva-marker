@@ -1,44 +1,35 @@
 <template lang="pug">
     v-layer(ref='drawLayer')
-        v-rect(:config='rectConfig')
+        v-rect(:config='config')
 </template>
 
 <script>
+    const style = {
+        opacity: 0.9,
+        stroke: '#c00',
+        strokeWidth: 1,
+        dash: [5, 3]
+    };
     export default {
         props: {
-            config: {
+            rect: {
                 type: Object,
                 required: true
-            },
-            visible: {
-                type: Boolean,
-                default: false
             }
         },
         data() {
             return {
-                style: {
-                    opacity: 0.9,
-                    stroke: '#c00',
-                    strokeWidth: 1,
-                    dash: [5, 3]
-                },
+                style
             };
         },
         computed: {
-            rectConfig() {
+            config() {
                 return {
-                    ...this.config,
                     ...this.style,
-                    visible: this.visible
+                    ...this.rect.config,
+                    visible: this.rect.visible
                 }
             }
-        },
-        methods: {
-
-        },
-        watch: {
-
         }
     };
 </script>
