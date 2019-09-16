@@ -148,7 +148,8 @@
             handleStageMouseMove(event) {
                 this.doDrawingRect(event);
             },
-            handleStageMouseOut() {}
+            handleStageMouseOut() {
+            }
         },
         watch: {
             drawing(value) {

@@ -5,10 +5,10 @@ import marker from './marker'
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {
-    marker
-  }
+    state: {},
+    mutations: {},
+    actions: {},
+    modules: {
+        marker
+    }
 })

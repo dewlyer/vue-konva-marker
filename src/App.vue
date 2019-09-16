@@ -5,10 +5,10 @@
 </template>
 
 <script>
-    import PaperMarker from './components/Marker/Marker'
+    import PaperMarker from './components/Marker'
     import PaperAction from './components/Action'
-    import Paper_A from './assets/paper_a.jpg'
-    import Paper_B from './assets/paper_b.jpg'
+    import Paper_A from './assets/paper/a.jpg'
+    import Paper_B from './assets/paper/b.jpg'
 
     const RECT_LIST = [
         [
