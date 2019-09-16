@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import PaperMarker from './components/Marker'
+    import PaperMarker from './components/Marker/Marker'
     import PaperAction from './components/Action'
     import Paper_A from './assets/paper_a.jpg'
     import Paper_B from './assets/paper_b.jpg'
