@@ -117,7 +117,7 @@
                 }
                 this.drawingRect.visible = false;
                 this.createNewRect(this.drawing);
-                this.$emit('change', this.rectList);
+                this.$emit('update:list', this.easyDeepCopy(this.rectList));
                 this.resetDrawingStatus();
                 this.$store.commit('marker/toggleDrawing', {
                     drawing: false
@@ -149,6 +149,9 @@
                 this.doDrawingRect(event);
             },
             handleStageMouseOut() {
+            },
+            easyDeepCopy(target) {
+                return JSON.parse(JSON.stringify(target));
             }
         },
         watch: {
@@ -165,7 +168,7 @@
             }
         },
         created() {
-            this.rectList = this.list;
+            this.rectList = this.easyDeepCopy(this.list);
             this.updateStageSize();
             window.addEventListener('resize', this.updateStageSize);
         }

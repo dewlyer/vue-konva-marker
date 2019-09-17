@@ -1,6 +1,6 @@
 <template lang="pug">
     .app-wrapper
-        paper-marker(:list='list', :background='background', @change='updateDataList')
+        paper-marker(:list.sync='list', :background='background')
         paper-action(@change='updateBackground')
 </template>
 
@@ -9,57 +9,7 @@
     import PaperAction from './components/Action'
     import Paper_A from './assets/paper/a.jpg'
     import Paper_B from './assets/paper/b.jpg'
-
-    const RECT_LIST = [
-        [
-            {
-                name: 'rect_a_1',
-                x: 120,
-                y: 120,
-                width: 100,
-                height: 100,
-            },
-            {
-                name: 'rect_a_2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-            }
-        ],
-        [
-            {
-                name: 'rect_b_1',
-                x: 120,
-                y: 220,
-                width: 100,
-                height: 100,
-            },
-            {
-                name: 'rect_b_2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-            }
-        ],
-        [
-            {
-                name: 'rect_c_1',
-                x: 120,
-                y: 320,
-                width: 100,
-                height: 100,
-            },
-            {
-                name: 'rect_c_2',
-                x: 550,
-                y: 180,
-                width: 300,
-                height: 158,
-            }
-        ]
-    ];
+    import Rect_List from './Data'
 
     export default {
         name: 'app',
@@ -74,15 +24,12 @@
             }
         },
         created() {
+            this.list = Rect_List;
             this.updateBackground([Paper_A, Paper_B]);
-            this.updateDataList(RECT_LIST);
         },
         methods: {
             updateBackground(files) {
                 this.background = files;
-            },
-            updateDataList(list) {
-                this.list = list;
             }
         }
     }
