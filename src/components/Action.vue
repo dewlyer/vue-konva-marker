@@ -2,7 +2,7 @@
     .btn-wrapper
         input.button-draw(type='button', value='放大', @click='handleStageScaleChange(1)', v-outline)
         input.button-draw(type='button', value='缩小', @click='handleStageScaleChange(-1)', v-outline)
-        input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item', @click='handleDrawStart(index)', v-outline)
+        input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item|buttonText', @click='handleDrawStart(index)', v-outline)
         template
             input.button-draw.button-image(type='button', value='换图', v-outline.target="'changeImageBtn'")
             input.input-image#changeImageBtn(type='file', multiple='multiple', @change='loadLocalImages')
@@ -11,7 +11,7 @@
 <script>
     import {mapGetters} from 'vuex'
 
-    const COLORS = ['绿框', '蓝框', '红框'];
+    const COLORS = ['绿', '蓝', '红'];
     const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
     const OUTLINE = {
         'border-color': '#333',
@@ -31,6 +31,11 @@
                     target.addEventListener('mouseover', () => el.setAttribute('style', Outline_Style.join(';')));
                     target.addEventListener('mouseout', () => el.removeAttribute('style'));
                 }
+            }
+        },
+        filters: {
+            buttonText(value) {
+                return `${value}框`;
             }
         },
         data() {
