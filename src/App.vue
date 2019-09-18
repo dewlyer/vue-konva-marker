@@ -35,4 +35,8 @@
     }
 </script>
 
-<style src="./assets/app.scss" lang="scss"></style>
+<style lang="scss">
+    @import '~bootstrap/scss/bootstrap';
+    @import '~bootstrap-vue/src/index';
+    @import './assets/app';
+</style>
