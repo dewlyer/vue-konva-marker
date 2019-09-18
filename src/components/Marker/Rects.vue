@@ -32,7 +32,7 @@
                 transformer: transformerConfig,
                 cursorStyle: 'default',
                 selectGroupConfig: {
-                    id: 'selectGroup',
+                    name: 'selectGroup',
                     x: 0,
                     y: 0,
                     draggable: true
@@ -66,13 +66,12 @@
                 rectLayer.batchDraw();
             },
             handleRectCtrlClick(event, groupIndex) {
-                console.log(1)
                 const rectsLayer = this.$refs.rectsLayer.getStage();
                 const selectGroup = this.$refs.selectGroup.getStage();
                 const {x, y} = selectGroup.getPosition();
                 const target = event.target;
                 const parent = target.getParent();
-                const parentId = parent.id();
+                const parentName = parent.name();
 
                 target.getLayer().find('Transformer').detach();
 
@@ -84,7 +83,7 @@
                 // console.log(selectGroup.absolutePosition());
                 // console.log(selectGroup.getPosition());
 
-                if (parentId === 'selectGroup') {
+                if (parentName === 'selectGroup') {
                     originIndex = target.getAttr('origin-group-index');
                     originGroup = this.$refs.originGroup[originIndex].getStage();
                     target.draggable(true);

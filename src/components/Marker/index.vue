@@ -175,8 +175,7 @@
     };
 </script>
 
-<style scoped lang="scss">
-    .marker-stage {
-        background: #999;
-    }
+<style scoped lang="sass">
+    .marker-stage
+        background: #999
 </style>
