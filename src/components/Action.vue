@@ -1,10 +1,11 @@
 <template lang="pug">
     .btn-wrapper
-        input.button-draw(type='button', value='放大', @click='handleStageScaleChange(1)')
-        input.button-draw(type='button', value='缩小', @click='handleStageScaleChange(-1)')
-        input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item', @click='handleDrawStart(index)')
-        input.button-draw.button-image(type='button', value='换图')
-        input.input-image(type='file', multiple='', @change='loadLocalImages')
+        input.button-draw(type='button', value='放大', @click='handleStageScaleChange(1)', v-outline)
+        input.button-draw(type='button', value='缩小', @click='handleStageScaleChange(-1)', v-outline)
+        input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item', @click='handleDrawStart(index)', v-outline)
+        template
+            input.button-draw.button-image(type='button', value='换图', v-outline.target="'changeImageBtn'")
+            input.input-image#changeImageBtn(type='file', multiple='multiple', @change='loadLocalImages')
 </template>
 
 <script>
@@ -12,9 +13,26 @@
 
     const COLORS = ['绿框', '蓝框', '红框'];
     const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
+    const OUTLINE = {
+        'border-color': '#333',
+        'box-shadow': '0px 3px 5px -1px rgba(0, 0, 0, 0.6);'
+    };
+    let Outline_Style = [];
+    for (let key in OUTLINE) {
+        Outline_Style.push(key + ':' + OUTLINE[key]);
+    }
 
     export default {
         name: 'paper-action',
+        directives: {
+            outline: {
+                inserted(el, binding) {
+                    const target = binding.modifiers.target ? document.getElementById(binding.value) : el;
+                    target.addEventListener('mouseover', () => el.setAttribute('style', Outline_Style.join(';')));
+                    target.addEventListener('mouseout', () => el.removeAttribute('style'));
+                }
+            }
+        },
         data() {
             return {
                 colors: COLORS,
