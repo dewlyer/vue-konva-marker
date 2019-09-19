@@ -1,6 +1,5 @@
 <template lang="pug">
     .action-wrapper
-
         .action-panel(:style='{width: actionPanelWidth + "px"}')
             b-card(no-body v-for='index of 4' :key='index')
                 b-card-header(header-tag='header' v-b-toggle='"accordion-" + index') {{actionPanelTitle[index - 1]}}
@@ -14,15 +13,18 @@
                             b-card-text Some quick example text to build on the
                         template(v-else)
                             b-card-text Some quick example text to build on the
-
         .btn-wrapper
-            input.button-draw(type='button', value='放大', v-outline, @click='handleStageScaleChange(1)')
-            input.button-draw(type='button', value='缩小', v-outline, @click='handleStageScaleChange(-1)')
-            input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item|buttonText', v-outline,
-                @click='handleDrawStart(index)')
-            template
-                input.button-draw.button-image(type='button', value='换图', v-outline.target="'changeImageBtn'")
-                input.input-image#changeImageBtn(type='file', multiple='multiple', @change='loadLocalImages')
+            b-button.ml-2(squared variant='secondary') 正面
+            b-button.ml-2(squared variant='secondary') 反面
+            b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
+            b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
+            // input.button-draw(type='button', value='放大', v-outline, @click='handleStageScaleChange(1)')
+            // input.button-draw(type='button', value='缩小', v-outline, @click='handleStageScaleChange(-1)')
+            //input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item|buttonText', v-outline,
+            //    @click='handleDrawStart(index)')
+            //template
+            //    input.button-draw.button-image(type='button', value='换图', v-outline.target="'changeImageBtn'")
+            //    input.input-image#changeImageBtn(type='file', multiple='multiple', @change='loadLocalImages')
 </template>
 
 <script>
@@ -36,7 +38,7 @@
         'box-shadow': '0px 3px 5px -1px rgba(0, 0, 0, 0.6);'
     };
     const outlineStyle = Object.entries(OUTLINE_STYLE).map(([key, value]) => key + ':' + value).join(';');
-    const ACTION_GROUP_TITLE = ['标题一','标题二','标题三','标题四'];
+    const ACTION_GROUP_TITLE = ['试卷信息','客观题','主观题','选做题'];
 
     export default {
         name: 'paper-action',
@@ -115,4 +117,33 @@
         overflow: hidden
         overflow-y: auto
         box-shadow: 1px 0 5px -1px rgba(0, 0, 0, 0.5)
+
+    .btn-wrapper
+        position: fixed
+        right: 10px
+        top: 10px
+
+        .button-draw
+            margin: 5px
+            padding: 5px 12px
+            background: #666
+            border: 1px solid #666
+            color: #fff
+            opacity: 0.9
+            outline: none
+            font-size: 14px
+            cursor: pointer
+
+        .button-image
+
+        .input-image
+            width: 28px
+            height: 20px
+            line-height: 20px
+            margin: 5px 5px 5px -59px
+            padding: 5px 12px
+            border: 1px solid #fff
+            opacity: 0
+            background: #c00
+            cursor: pointer
 </style>
