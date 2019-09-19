@@ -24,7 +24,7 @@
                 default() {
                     return [];
                 }
-            },
+            }
         },
         data() {
             return {
@@ -100,6 +100,8 @@
 
                 rectsLayer.draw();
             },
+            handleRectShiftClick(event) {
+            },
             handleRectMouseDown(event, groupIndex) {
                 const target = event.target;
                 const parent = target.getParent();
@@ -107,6 +109,11 @@
 
                 if (event.evt.ctrlKey) {
                     this.handleRectCtrlClick(event, groupIndex);
+                    return;
+                }
+
+                if (event.evt.shiftKey) {
+                    this.handleRectShiftClick(event);
                     return;
                 }
 

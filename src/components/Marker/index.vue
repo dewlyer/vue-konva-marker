@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-stage.marker-stage(ref='stage', :config='stageConfig',
+    v-stage.marker-stage(ref='stage', :config='stageConfig', :style='{paddingLeft: stagePadding + "px"}',
         @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
         @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
         background-layer(:src='background')
@@ -12,6 +12,7 @@
     import BackgroundLayer from './Background'
     import RectsLayer from './Rects'
     import DrawLayer from './Draw'
+    import {STAGE_PADDING} from '../../config'
 
     export default {
         name: 'paper-marker',
@@ -36,6 +37,7 @@
         },
         data() {
             return {
+                stagePadding: STAGE_PADDING,
                 stageConfig: {
                     width: 0,
                     height: 0,
@@ -62,7 +64,7 @@
         }),
         methods: {
             updateStageSize() {
-                this.stageConfig.width = window.innerWidth;
+                this.stageConfig.width = window.innerWidth - this.stagePadding;
                 this.stageConfig.height = window.innerHeight;
             },
             getAbsolutePosition(event) {
