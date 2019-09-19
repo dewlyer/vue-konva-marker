@@ -3,9 +3,9 @@
         v-stage.marker-stage(ref='stage', :config='stageConfig', :style='stageStyle',
             @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
             @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
-            v-layer(v-for='(image, index) in background' :key='index')
+            v-layer(v-for='(image, index) in background' ref='pageLayer' :key='index' :config="pageLayerConfig(index)")
                 background-group(:src='[image]')
-                rects-group(:list='rectList')
+                rects-group(:list='rectList[index]')
                 draw-group(:rect='drawingRect')
 </template>
 
@@ -35,6 +35,10 @@
                 default() {
                     return [];
                 }
+            },
+            showIndex: {
+                type: Number,
+                default: 0
             }
         },
         data() {
@@ -70,6 +74,9 @@
             }
         },
         methods: {
+            pageLayerConfig(index) {
+                return {visible: this.showIndex === index}
+            },
             updateStageSize() {
                 this.stageConfig.width = window.innerWidth - this.stagePadding;
                 this.stageConfig.height = window.innerHeight;
@@ -99,11 +106,12 @@
                 });
             },
             createNewRect(index) {
+                const p = this.showIndex;
                 const i = index - 1;
                 const rect = Object.assign({}, this.drawingRect.config, {
-                    name: `rect_${i}_${new Date().getTime()}`
+                    name: `paper${p}_group_${i}_${new Date().getTime()}`
                 });
-                this.rectList[i].push(rect);
+                this.rectList[p][i].push(rect);
             },
             resetDrawingStatus() {
                 this.drawingRect.start = null;

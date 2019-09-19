@@ -1,7 +1,7 @@
 <template lang="pug">
     .app-wrapper
-        paper-marker(:list.sync='list' :background='background')
-        paper-action(@change='updateBackground')
+        paper-marker(:background='background' :showIndex="showIndex" :list.sync='list')
+        paper-action(:background.sync='background' :showIndex.sync="showIndex")
 </template>
 
 <script>
@@ -20,17 +20,15 @@
         data() {
             return {
                 list: [],
-                background: []
+                background: [],
+                showIndex: 0
             }
         },
         created() {
             this.list = Rect_List;
-            this.updateBackground([Paper_A, Paper_B]);
+            this.background = [Paper_A, Paper_B];
         },
         methods: {
-            updateBackground(files) {
-                this.background = files;
-            }
         }
     }
 </script>

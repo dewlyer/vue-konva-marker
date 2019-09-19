@@ -14,17 +14,13 @@
                         template(v-else)
                             b-card-text Some quick example text to build on the
         .btn-wrapper
-            b-button.ml-2(squared variant='secondary') 正面
-            b-button.ml-2(squared variant='secondary') 反面
+            b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(0)") 正面
+            b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
-            // input.button-draw(type='button', value='放大', v-outline, @click='handleStageScaleChange(1)')
-            // input.button-draw(type='button', value='缩小', v-outline, @click='handleStageScaleChange(-1)')
-            //input.button-draw(type='button', v-for='(item, index) in colors', :key='index', :value='item|buttonText', v-outline,
-            //    @click='handleDrawStart(index)')
-            //template
-            //    input.button-draw.button-image(type='button', value='换图', v-outline.target="'changeImageBtn'")
-            //    input.input-image#changeImageBtn(type='file', multiple='multiple', @change='loadLocalImages')
+            b-button.ml-2(v-for='(item, index) in colors' :key='index' variant='secondary' squared @click='handleDrawStart(index)') {{ item | buttonText }}
+            b-form-file.ml-2.paper-files(v-model='paperFiles' :state='Boolean(paperFiles)'
+                placeholder='更换试卷图片' browse-text='浏览' accept='image/*' no-drop multiple)
 </template>
 
 <script>
@@ -56,8 +52,21 @@
                 return `${value}框`;
             }
         },
+        props: {
+            background: {
+                type: Array,
+                default() {
+                    return [];
+                }
+            },
+            showIndex: {
+                type: Number,
+                default: 0
+            }
+        },
         data() {
             return {
+                paperFiles: null,
                 colors: COLORS,
                 stageScale: STAGE_SCALE,
                 currentScale: 1,
@@ -77,7 +86,17 @@
         created() {
             this.currentScale = this.scale;
         },
+        watch: {
+            paperFiles(files) {
+                if (files) {
+                    this.loadLocalImages(files);
+                }
+            }
+        },
         methods: {
+            handlePaperIndexChange(index) {
+                this.$emit('update:showIndex', index);
+            },
             handleStageScaleChange(step) {
                 let nextScaleIndex = this.currentScaleIndex + step;
                 if (nextScaleIndex >= 0 && nextScaleIndex < this.stageScale.length) {
@@ -88,10 +107,10 @@
             handleDrawStart(index) {
                 this.$store.commit('marker/toggleDrawing', {drawing: index + 1});
             },
-            loadLocalImages(e) {
-                this.readAllImageFiles(e.target.files).then(files => {
+            loadLocalImages(files) {
+                this.readAllImageFiles(files).then(files => {
                     if (files && files.length) {
-                        this.$emit('change', files);
+                        this.$emit('update:background', files);
                     }
                 });
             },
@@ -123,27 +142,8 @@
         right: 10px
         top: 10px
 
-        .button-draw
-            margin: 5px
-            padding: 5px 12px
-            background: #666
-            border: 1px solid #666
-            color: #fff
-            opacity: 0.9
-            outline: none
-            font-size: 14px
-            cursor: pointer
-
-        .button-image
-
-        .input-image
-            width: 28px
-            height: 20px
-            line-height: 20px
-            margin: 5px 5px 5px -59px
-            padding: 5px 12px
-            border: 1px solid #fff
-            opacity: 0
-            background: #c00
-            cursor: pointer
+        .paper-files
+            width: 300px
+            overflow: hidden
+            vertical-align: top
 </style>

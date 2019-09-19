@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-group(ref='rectsLayer')
+    v-group(ref='rectsGroup')
         v-group(ref='originGroup', v-for='(rects, index) in rectsList', :key='index')
             v-rect(v-for='item in rects', :key='item.name', :config='item',
                 @mousedown='handleRectMouseDown($event, index)',
@@ -66,7 +66,7 @@
                 rectLayer.batchDraw();
             },
             handleRectCtrlClick(event, groupIndex) {
-                const rectsLayer = this.$refs.rectsLayer.getStage();
+                const rectsGroup = this.$refs.rectsGroup.getStage();
                 const selectGroup = this.$refs.selectGroup.getStage();
                 const {x, y} = selectGroup.getPosition();
                 const target = event.target;
@@ -98,7 +98,7 @@
                     target.moveTo(selectGroup);
                 }
 
-                rectsLayer.draw();
+                rectsGroup.draw();
             },
             handleRectShiftClick() {
             },
