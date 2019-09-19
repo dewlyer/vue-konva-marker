@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-layer(ref='drawLayer')
+    v-group(ref='drawGroup')
         v-rect(:config='config')
 </template>
 

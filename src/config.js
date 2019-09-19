@@ -1,1 +1,1 @@
-export const STAGE_PADDING = 250;
+export const STAGE_PADDING = 300;

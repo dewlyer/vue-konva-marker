@@ -1,25 +1,27 @@
 <template lang="pug">
-    v-stage.marker-stage(ref='stage', :config='stageConfig', :style='{paddingLeft: stagePadding + "px"}',
-        @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
-        @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
-        background-layer(:src='background')
-        rects-layer(:list='rectList')
-        draw-layer(:rect='drawingRect')
+    .marker-wrapper
+        v-stage.marker-stage(ref='stage', :config='stageConfig', :style='stageStyle',
+            @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
+            @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
+            v-layer(v-for='(image, index) in background' :key='index')
+                background-group(:src='[image]')
+                rects-group(:list='rectList')
+                draw-group(:rect='drawingRect')
 </template>
 
 <script>
     import {mapGetters} from 'vuex'
-    import BackgroundLayer from './Background'
-    import RectsLayer from './Rects'
-    import DrawLayer from './Draw'
+    import backgroundGroup from './Background'
+    import RectsGroup from './Rects'
+    import DrawGroup from './Draw'
     import {STAGE_PADDING} from '../../config'
 
     export default {
         name: 'paper-marker',
         components: {
-            BackgroundLayer,
-            RectsLayer,
-            DrawLayer
+            backgroundGroup,
+            RectsGroup,
+            DrawGroup
         },
         props: {
             list: {
@@ -58,10 +60,15 @@
                 }
             };
         },
-        computed: mapGetters({
-            drawing: 'marker/drawing',
-            scale: 'marker/scale'
-        }),
+        computed: {
+            ...mapGetters({
+                drawing: 'marker/drawing',
+                scale: 'marker/scale'
+            }),
+            stageStyle() {
+                return {paddingLeft: this.stagePadding + 'px'};
+            }
+        },
         methods: {
             updateStageSize() {
                 this.stageConfig.width = window.innerWidth - this.stagePadding;

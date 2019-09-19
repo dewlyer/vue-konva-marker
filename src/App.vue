@@ -1,6 +1,6 @@
 <template lang="pug">
     .app-wrapper
-        paper-marker(:list.sync='list', :background='background')
+        paper-marker(:list.sync='list' :background='background')
         paper-action(@change='updateBackground')
 </template>
 
