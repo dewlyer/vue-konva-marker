@@ -3,10 +3,11 @@
         v-stage.marker-stage(ref='stage', :config='stageConfig', :style='stageStyle',
             @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
             @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
-            v-layer(v-for='(image, index) in background' ref='pageLayer' :key='index' :config="pageLayerConfig(index)")
-                background-group(:src='[image]')
-                rects-group(:list='rectList[index]')
-                draw-group(:rect='drawingRect')
+            v-layer
+                v-group(v-for='(image, index) in background' ref='pageGroup' :key='index' :config='pageGroupConfig(index)')
+                    background-group(:src='[image]')
+                    rects-group(:list='rectList[index]')
+                    draw-group(:rect='drawingRect')
 </template>
 
 <script>
@@ -74,7 +75,7 @@
             }
         },
         methods: {
-            pageLayerConfig(index) {
+            pageGroupConfig(index) {
                 return {visible: this.showIndex === index}
             },
             updateStageSize() {

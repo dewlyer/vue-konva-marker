@@ -2,10 +2,10 @@
     .action-wrapper
         .action-panel(:style='actionPanelStyle')
             b-card(no-body v-for='(item, index) in actionPanel.groups' :key='index' border-variant='light' bg-variant='light')
-                b-card-header(header-tag='header' header-class='action-panel-header' v-b-toggle='getAccordionId(index)' role='tab')
+                b-card-header(header-tag='header' header-class='action-panel-header' v-b-toggle='getAccordionId(index)')
                     span.title {{ item.title }}
-                    b-link(v-if='index !== 0' href='#' class='card-link' @click.stop='handleActionPanelBtnClick(index)') 添加
-                b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0' role='tablist')
+                    b-link(v-if='index !== 0' href='#' class='card-link' @click.stop='handleDrawStart(index)') 添加
+                b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0')
                     b-card-body
                         template(v-if='index === 0')
                             b-card-text Some quick example text to build on the
@@ -20,10 +20,7 @@
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
-
-            // b-button.ml-2(v-for='(item, index) in colors' :key='index' variant='secondary' @click='handleDrawStart(index)' squared) {{ item | buttonText }}
-
-            b-form-file.ml-2.paper-files(v-model='paperFiles' :state='Boolean(paperFiles)'
+            b-form-file.ml-2.paper-files(v-model='paperFiles' :file-name-formatter="formatPaperFilesNames"
                 placeholder='更换试卷图片' browse-text='浏览' accept='image/*' no-drop multiple)
 </template>
 
@@ -45,7 +42,6 @@
             title: '选做题'
         },
     ];
-    const COLORS = ['黑', '绿', '蓝', '红'];
     const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
     // const OUTLINE_STYLE = {
@@ -66,9 +62,6 @@
             // }
         },
         filters: {
-            buttonText(value) {
-                return `${value}框`;
-            }
         },
         props: {
             background: {
@@ -89,7 +82,6 @@
                     groups: ACTION_GROUPS
                 },
                 paperFiles: null,
-                colors: COLORS,
                 stageScale: STAGE_SCALE,
                 currentScale: 1
             }
@@ -111,17 +103,24 @@
         },
         watch: {
             paperFiles(files) {
-                if (files) {
-                    this.loadLocalImages(files);
+                if (files && files.length) {
+                    this.loadLocalImages(files.slice(0, 2));
                 }
             }
         },
         methods: {
+            formatPaperFilesNames(files) {
+                if (files && files.length) {
+                    return files.length > 1 ? '已选择正反两面试卷' : '已选择正面试卷';
+                } else {
+                    return '选择试卷无效';
+                }
+            },
             getAccordionId(index) {
                 return 'accordion-' + index;
             },
-            handleActionPanelBtnClick(index) {
-                this.handleDrawStart(index);
+            handlePaperImageChange(images) {
+                this.$emit('update:background', images);
             },
             handlePaperIndexChange(index) {
                 this.$emit('update:showIndex', index);
@@ -137,9 +136,10 @@
                 this.$store.commit('marker/toggleDrawing', {drawing: index + 1});
             },
             loadLocalImages(files) {
-                this.readAllImageFiles(files).then(files => {
-                    if (files && files.length) {
-                        this.$emit('update:background', files);
+                this.readAllImageFiles(files).then(images => {
+                    if (images && images.length) {
+                        this.handlePaperIndexChange(0);
+                        this.handlePaperImageChange(images);
                     }
                 });
             },
@@ -185,7 +185,7 @@
         top: 10px
 
         .paper-files
-            width: 300px
+            width: 240px
             overflow: hidden
             vertical-align: top
 </style>

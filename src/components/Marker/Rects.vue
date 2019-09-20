@@ -41,7 +41,7 @@
         },
         computed: {
             rectsList() {
-                return this.list.map((rects, index) => this.getListEx(rects, index));
+                return !this.list ? [] : this.list.map((rects, index) => this.getListEx(rects, index));
             }
         },
         methods: {
