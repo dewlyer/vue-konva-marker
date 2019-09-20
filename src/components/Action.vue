@@ -18,7 +18,7 @@
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
-            b-button.ml-2(v-for='(item, index) in colors' :key='index' variant='secondary' squared @click='handleDrawStart(index)') {{ item | buttonText }}
+            b-button.ml-2(v-for='(item, index) in colors' :key='index' variant='secondary' @click='handleDrawStart(index)' squared) {{ item | buttonText }}
             b-form-file.ml-2.paper-files(v-model='paperFiles' :state='Boolean(paperFiles)'
                 placeholder='更换试卷图片' browse-text='浏览' accept='image/*' no-drop multiple)
 </template>
@@ -29,23 +29,24 @@
 
     const COLORS = ['绿', '蓝', '红'];
     const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
-    const OUTLINE_STYLE = {
-        'border-color': '#333',
-        'box-shadow': '0px 3px 5px -1px rgba(0, 0, 0, 0.6);'
-    };
-    const outlineStyle = Object.entries(OUTLINE_STYLE).map(([key, value]) => key + ':' + value).join(';');
     const ACTION_GROUP_TITLE = ['试卷信息','客观题','主观题','选做题'];
+
+    // const OUTLINE_STYLE = {
+    //     'border-color': '#333',
+    //     'box-shadow': '0px 3px 5px -1px rgba(0, 0, 0, 0.6);'
+    // };
+    // const outlineStyle = Object.entries(OUTLINE_STYLE).map(([key, value]) => key + ':' + value).join(';');
 
     export default {
         name: 'paper-action',
         directives: {
-            outline: {
-                inserted(el, binding) {
-                    const target = binding.modifiers.target ? document.getElementById(binding.value) : el;
-                    target.addEventListener('mouseover', () => el.setAttribute('style', outlineStyle));
-                    target.addEventListener('mouseout', () => el.removeAttribute('style'));
-                }
-            }
+            // outline: {
+            //     inserted(el, binding) {
+            //         const target = binding.modifiers.target ? document.getElementById(binding.value) : el;
+            //         target.addEventListener('mouseover', () => el.setAttribute('style', outlineStyle));
+            //         target.addEventListener('mouseout', () => el.removeAttribute('style'));
+            //     }
+            // }
         },
         filters: {
             buttonText(value) {

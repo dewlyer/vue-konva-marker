@@ -25,10 +25,13 @@
             }
         },
         created() {
-            this.list = Rect_List;
-            this.background = [Paper_A, Paper_B];
+            this.init();
         },
         methods: {
+            init() {
+                this.list = Rect_List;
+                this.background = [Paper_A, Paper_B];
+            }
         }
     }
 </script>
