@@ -1,9 +1,11 @@
 <template lang="pug">
     .action-wrapper
         .action-panel(:style='actionPanelStyle')
-            b-card(no-body v-for='(item, index) of actionPanel.groups' :key='index')
-                b-card-header(header-tag='header' v-b-toggle='getAccordionId(index)') {{ item.title }}
-                b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0')
+            b-card(no-body v-for='(item, index) in actionPanel.groups' :key='index' border-variant='light' bg-variant='light')
+                b-card-header(header-tag='header' header-class='action-panel-header' v-b-toggle='getAccordionId(index)' role='tab')
+                    span.title {{ item.title }}
+                    b-link(v-if='index !== 0' href='#' class='card-link' @click.stop='handleActionPanelBtnClick(index)') 添加
+                b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0' role='tablist')
                     b-card-body
                         template(v-if='index === 0')
                             b-card-text Some quick example text to build on the
@@ -18,7 +20,9 @@
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
-            b-button.ml-2(v-for='(item, index) in colors' :key='index' variant='secondary' @click='handleDrawStart(index)' squared) {{ item | buttonText }}
+
+            // b-button.ml-2(v-for='(item, index) in colors' :key='index' variant='secondary' @click='handleDrawStart(index)' squared) {{ item | buttonText }}
+
             b-form-file.ml-2.paper-files(v-model='paperFiles' :state='Boolean(paperFiles)'
                 placeholder='更换试卷图片' browse-text='浏览' accept='image/*' no-drop multiple)
 </template>
@@ -41,7 +45,7 @@
             title: '选做题'
         },
     ];
-    const COLORS = ['绿', '蓝', '红'];
+    const COLORS = ['黑', '绿', '蓝', '红'];
     const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
     // const OUTLINE_STYLE = {
@@ -116,6 +120,9 @@
             getAccordionId(index) {
                 return 'accordion-' + index;
             },
+            handleActionPanelBtnClick(index) {
+                this.handleDrawStart(index);
+            },
             handlePaperIndexChange(index) {
                 this.$emit('update:showIndex', index);
             },
@@ -151,13 +158,26 @@
 <style lang="sass" scoped>
     .action-panel
         height: 100%
-        background: #eee
+        background: #f8f9fa
         position: fixed
         left: 0
         top: 0
         overflow: hidden
         overflow-y: auto
         box-shadow: 1px 0 5px -1px rgba(0, 0, 0, 0.5)
+
+    .action-panel-header
+        cursor: pointer
+
+        .title
+            font-size: 16px
+
+        .card-link
+            float: right
+            font-size: 14px
+            color: #999
+            &:hover
+                color: #c00
 
     .btn-wrapper
         position: fixed

@@ -1,6 +1,6 @@
 const RECT_MIN_PADDING = 20;
 
-export const rectColors = ['#63da4f', '#59a8da', '#da2b29'];
+export const rectColors = ['#666666', '#63da4f', '#59a8da', '#da2b29'];
 
 export const rectConfig = {
     fill: '#999',

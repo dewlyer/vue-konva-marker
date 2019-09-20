@@ -2,7 +2,16 @@
   [
     [
       {
-        "name": "paper1_group_a_1",
+        "name": "paper1_group0_s1",
+        "x": 100,
+        "y": 100,
+        "width": 50,
+        "height": 50
+      }
+    ],
+    [
+      {
+        "name": "paper1_group1_s1",
         "x": 120,
         "y": 120,
         "width": 100,
@@ -11,7 +20,7 @@
     ],
     [
       {
-        "name": "paper1_group_b_1",
+        "name": "paper1_group2_s1",
         "x": 120,
         "y": 220,
         "width": 100,
@@ -20,7 +29,7 @@
     ],
     [
       {
-        "name": "paper1_group_c_1",
+        "name": "paper1_group3_s1",
         "x": 120,
         "y": 320,
         "width": 100,
@@ -31,7 +40,16 @@
   [
     [
       {
-        "name": "paper2_group_a_1",
+        "name": "paper2_group0_s1",
+        "x": 100,
+        "y": 100,
+        "width": 50,
+        "height": 50
+      }
+    ],
+    [
+      {
+        "name": "paper2_group1_s1",
         "x": 320,
         "y": 220,
         "width": 180,
@@ -40,7 +58,7 @@
     ],
     [
       {
-        "name": "paper2_group_b_1",
+        "name": "paper2_group2_s1",
         "x": 420,
         "y": 420,
         "width": 130,
@@ -49,7 +67,7 @@
     ],
     [
       {
-        "name": "paper2_group_c_1",
+        "name": "paper2_group_3_s1",
         "x": 620,
         "y": 320,
         "width": 130,

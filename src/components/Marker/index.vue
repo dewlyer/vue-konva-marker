@@ -109,7 +109,7 @@
                 const p = this.showIndex;
                 const i = index - 1;
                 const rect = Object.assign({}, this.drawingRect.config, {
-                    name: `paper${p}_group_${i}_${new Date().getTime()}`
+                    name: `paper${p}_group${i}_x${new Date().getTime()}`
                 });
                 this.rectList[p][i].push(rect);
             },
