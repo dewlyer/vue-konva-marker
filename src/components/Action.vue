@@ -1,21 +1,39 @@
 <template lang="pug">
     .action-wrapper
-        .action-panel(:style='actionPanelStyle')
+        b-container.action-panel(:style='actionPanelStyle')
             b-card(no-body v-for='(item, index) in actionPanel.groups' :key='index' border-variant='light' bg-variant='light')
                 b-card-header(header-tag='header' header-class='action-panel-header' v-b-toggle='getAccordionId(index)')
-                    span.title {{ item.title }}
-                    b-link(v-if='index !== 0' href='#' class='card-link' @click.stop='handleDrawStart(index)') 添加
+                    b-card-title.title(title-tag='span') {{ item.title }}
+                    b-link.card-link(v-if='index !== 0' href='#' @click.stop='handleDrawStart(index)') 添加
                 b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0')
-                    b-card-body
-                        template(v-if='index === 0')
-                            b-card-text Some quick example text to build on the
-                        template(v-else-if='index === 1')
-                            b-card-text Some quick example text to build on the
-                        template(v-else-if='index === 2')
-                            b-card-text Some quick example text to build on the
-                        template(v-else)
-                            b-card-text Some quick example text to build on the
-        .btn-wrapper
+                    b-card-body(body-class='action-panel-body')
+                        b-form(v-if='index === 0')
+                            b-form-group(label-cols='3' label-size='sm' label='水平矫正')
+                                b-button(size='sm' variant='outline-dark') 定位点
+                                b-button(size='sm' variant='outline-dark') 水平点
+                            b-form-group(label-cols='3' label-size='sm' label='科目识别')
+                                b-button(size='sm' variant='outline-dark') 选择
+                            b-form-group(label-cols='3' label-size='sm' label='考号区')
+                                b-button(size='sm' variant='outline-dark') 条形码区
+                                b-button(size='sm' variant='outline-dark') 填涂考号
+                            b-form-group(label-cols='3' label-size='sm' label='定位点')
+                                b-button(size='sm' variant='outline-dark') 定位点1
+                                b-button(size='sm' variant='outline-dark') 定位点2
+                                b-button(size='sm' variant='outline-dark') 定位点3
+                            b-form-group(label-cols='3' label-size='sm' label='缺考')
+                                b-button(size='sm' variant='outline-dark') 选择
+                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
+                                b-button(size='sm' variant='outline-dark') 选择
+                        b-form(v-else-if='index === 1')
+                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
+                                b-button(size='sm' variant='outline-dark') 选择
+                        b-form(v-else-if='index === 2')
+                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
+                                b-button(size='sm' variant='outline-dark') 选择
+                        b-form(v-else)
+                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
+                                b-button(size='sm' variant='outline-dark') 选择
+        b-button-toolbar.btn-wrapper
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(0)") 正面
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
@@ -29,18 +47,10 @@
     import {STAGE_PADDING} from '../config'
 
     const ACTION_GROUPS = [
-        {
-            title: '试卷信息'
-        },
-        {
-            title: '客观题'
-        },
-        {
-            title: '主观题'
-        },
-        {
-            title: '选做题'
-        },
+        {title: '试卷信息'},
+        {title: '客观题'},
+        {title: '主观题'},
+        {title: '选做题'},
     ];
     const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
@@ -157,13 +167,14 @@
 
 <style lang="sass" scoped>
     .action-panel
-        height: 100%
-        background: #f8f9fa
         position: fixed
         left: 0
         top: 0
         overflow: hidden
         overflow-y: auto
+        height: 100%
+        padding: 0
+        background: #f8f9fa
         box-shadow: 1px 0 5px -1px rgba(0, 0, 0, 0.5)
 
     .action-panel-header
@@ -178,6 +189,9 @@
             color: #999
             &:hover
                 color: #c00
+
+    .action-panel-body
+        padding: 15px
 
     .btn-wrapper
         position: fixed
