@@ -1,11 +1,15 @@
 const state = {
-    drawing: false,
+    draw: {
+        status: false,
+        groupIndex: null,
+        rectId: null
+    },
     scale: 1
 };
 
 const mutations = {
-    toggleDrawing(state, {drawing}) {
-        state.drawing = drawing;
+    updateDraw(state, {draw}) {
+        state.draw = draw;
     },
     updateScale(state, {scale}) {
         state.scale = scale;
@@ -15,7 +19,7 @@ const mutations = {
 const actions = {};
 
 const getters = {
-    drawing: state => state.drawing,
+    draw: state => state.draw,
     scale: state => state.scale
 };
 

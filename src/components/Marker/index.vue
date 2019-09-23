@@ -67,7 +67,7 @@
         },
         computed: {
             ...mapGetters({
-                drawing: 'marker/drawing',
+                draw: 'marker/draw',
                 scale: 'marker/scale'
             }),
             stageStyle() {
@@ -106,11 +106,15 @@
                     height: Math.abs(drawStart.y - drawEnd.y)
                 });
             },
-            createNewRect(index) {
+            createNewRect({status, groupIndex, rectId}) {
+                if (!status) {
+                    return;
+                }
+
                 const p = this.showIndex;
-                const i = index - 1;
+                const i = groupIndex;
                 const rect = Object.assign({}, this.drawingRect.config, {
-                    name: `paper${p}_group${i}_x${new Date().getTime()}`
+                    name: rectId || `paper${p}_group${i}_x${new Date().getTime()}`
                 });
                 this.rectList[p][i].push(rect);
             },
@@ -123,26 +127,30 @@
                 this.drawingRect.config.height = 0;
             },
             startDrawingRect(event) {
-                if (!this.drawing) {
+                if (!this.draw.status) {
                     return;
                 }
                 this.drawingRect.visible = true;
                 this.drawingRect.start = this.getAbsolutePosition(event);
             },
             endDrawingRect() {
-                if (!this.drawing) {
+                if (!this.draw.status) {
                     return;
                 }
                 this.drawingRect.visible = false;
-                this.createNewRect(this.drawing);
+                this.createNewRect(this.draw);
                 this.$emit('update:list', this.easyDeepCopy(this.rectList));
                 this.resetDrawingStatus();
-                this.$store.commit('marker/toggleDrawing', {
-                    drawing: false
+                this.$store.commit('marker/updateDraw', {
+                    draw: {
+                        status: false,
+                        groupIndex: null,
+                        rectId: null
+                    }
                 });
             },
             doDrawingRect(event) {
-                if (!this.drawing) {
+                if (!this.draw.status) {
                     return;
                 }
                 if (event.target !== event.currentTarget) {
@@ -173,10 +181,12 @@
             }
         },
         watch: {
-            drawing(value) {
-                const container = this.$refs.stage.getStage().container();
-                container.style.cursor = value ? 'crosshair' : 'default';
-                this.stageConfig.draggable = !value;
+            'draw.status': {
+                handler(value) {
+                    const container = this.$refs.stage.getStage().container();
+                    container.style.cursor = value ? 'crosshair' : 'default';
+                    this.stageConfig.draggable = !value;
+                }
             },
             scale(value) {
                 const stage = this.$refs.stage.getStage();

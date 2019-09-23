@@ -9,7 +9,7 @@
                     b-card-body(body-class='action-panel-body')
                         b-form(v-if='index === 0')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='水平矫正：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("1111")') 定位点
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 水平点
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='科目识别：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
@@ -77,18 +77,18 @@
         },
         data() {
             return {
+                paperFiles: null,
+                stageScale: STAGE_SCALE,
+                currentScale: 1,
                 actionPanel: {
                     width: STAGE_PADDING,
                     groups: ACTION_GROUPS
-                },
-                paperFiles: null,
-                stageScale: STAGE_SCALE,
-                currentScale: 1
+                }
             }
         },
         computed: {
             ...mapGetters({
-                drawing: 'marker/drawing',
+                draw: 'marker/draw',
                 scale: 'marker/scale'
             }),
             actionPanelStyle() {
@@ -133,7 +133,18 @@
                 }
             },
             handleDrawStart(index) {
-                this.$store.commit('marker/toggleDrawing', {drawing: index + 1});
+                this.updateDrawStatus(index);
+            },
+            handlePaperInfoDraw(id) {
+                this.updateDrawStatus(0, id);
+            },
+            updateDrawStatus(index, id) {
+                const draw = {
+                    status: true,
+                    groupIndex: index,
+                    rectId: id || null
+                };
+                this.$store.commit('marker/updateDraw', {draw});
             },
             loadLocalImages(files) {
                 this.readAllImageFiles(files).then(images => {
