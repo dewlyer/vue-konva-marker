@@ -6,7 +6,7 @@
             v-layer
                 v-group(v-for='(image, index) in background' ref='pageGroup' :key='index' :config='pageGroupConfig(index)')
                     background-group(:src='[image]')
-                    rects-group(:list='rectList[index]')
+                    rects-group(:list.sync='rectList[index]')
                     draw-group(:rect='drawingRect')
 </template>
 
@@ -139,7 +139,6 @@
                 }
                 this.drawingRect.visible = false;
                 this.createNewRect(this.draw);
-                this.$emit('update:list', this.easyDeepCopy(this.rectList));
                 this.resetDrawingStatus();
                 this.$store.commit('marker/updateDraw', {
                     draw: {
@@ -187,6 +186,9 @@
                     container.style.cursor = value ? 'crosshair' : 'default';
                     this.stageConfig.draggable = !value;
                 }
+            },
+            rectList(value) {
+                this.$emit('update:list', this.easyDeepCopy(value));
             },
             scale(value) {
                 const stage = this.$refs.stage.getStage();

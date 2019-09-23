@@ -1,10 +1,12 @@
 <template lang="pug">
     v-group(ref='rectsGroup')
         v-group(ref='originGroup', v-for='(rects, index) in rectsList', :key='index')
-            v-rect(v-for='item in rects', :key='item.name', :config='item',
+            v-rect(v-for='(item, i) in rects', :key='item.name', :config='item',
                 @mousedown='handleRectMouseDown($event, index)',
                 @mouseenter='handleRectMouseEnter',
                 @mouseleave='handleRectMouseLeave',
+                @dragend='handleRectDataChange($event, index, i)'
+                @transformend='handleRectDataChange($event, index, i)'
                 @click='handleRectClick')
             v-transformer(:config='transformer', @transform='handleTransform')
         v-group(ref='selectGroup', :config='selectGroupConfig')
@@ -56,6 +58,20 @@
                     selectStyle.fill = selectColor;
                 }
                 return rects.map(item => Object.assign(item, rectConfig, selectStyle));
+            },
+            handleRectDataChange(event, groupIndex, rectIndex) {
+                const target = event.target;
+                const {x, y, width, height, scaleX, scaleY} = target.attrs;
+                const rectAttr = {x, y, width: Math.round(width * scaleX), height: Math.round(height * scaleY)};
+                const list = this.list.map((group, index) => {
+                    if (index === groupIndex) {
+                        return group.map((rect, i) => i === rectIndex ? Object.assign({}, rect, rectAttr) : rect);
+                    } else {
+                        return group;
+                    }
+                });
+                target.scale({x: 1, y: 1});
+                this.$emit('update:list', list);
             },
             handleRectClick(event) {
                 const targetRect = event.currentTarget;
