@@ -10,7 +10,7 @@
                         b-form(v-if='index === 0')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='水平矫正：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("1111")') 定位点
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 水平点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("2222")') 水平点
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='科目识别：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='考号区：')
