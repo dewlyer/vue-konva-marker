@@ -1,7 +1,7 @@
 <template lang="pug">
     .app-wrapper
-        paper-marker(:background='background' :showIndex="showIndex" :list.sync='list')
-        paper-action(:background.sync='background' :showIndex.sync="showIndex")
+        paper-marker(:background='background' :showIndex='showIndex' :list.sync='list')
+        paper-action(:background.sync='background' :showIndex.sync='showIndex')
 </template>
 
 <script>

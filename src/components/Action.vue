@@ -8,31 +8,37 @@
                 b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0')
                     b-card-body(body-class='action-panel-body')
                         b-form(v-if='index === 0')
-                            b-form-group(label-cols='3' label-size='sm' label='水平矫正')
-                                b-button(size='sm' variant='outline-dark') 定位点
-                                b-button(size='sm' variant='outline-dark') 水平点
-                            b-form-group(label-cols='3' label-size='sm' label='科目识别')
-                                b-button(size='sm' variant='outline-dark') 选择
-                            b-form-group(label-cols='3' label-size='sm' label='考号区')
-                                b-button(size='sm' variant='outline-dark') 条形码区
-                                b-button(size='sm' variant='outline-dark') 填涂考号
-                            b-form-group(label-cols='3' label-size='sm' label='定位点')
-                                b-button(size='sm' variant='outline-dark') 定位点1
-                                b-button(size='sm' variant='outline-dark') 定位点2
-                                b-button(size='sm' variant='outline-dark') 定位点3
-                            b-form-group(label-cols='3' label-size='sm' label='缺考')
-                                b-button(size='sm' variant='outline-dark') 选择
-                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
-                                b-button(size='sm' variant='outline-dark') 选择
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='水平矫正：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 水平点
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='科目识别：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='考号区：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 条形码区
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 填涂考号
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='定位点：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点1
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点2
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点3
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                            b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
                         b-form(v-else-if='index === 1')
-                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
-                                b-button(size='sm' variant='outline-dark') 选择
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                            b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
                         b-form(v-else-if='index === 2')
-                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
-                                b-button(size='sm' variant='outline-dark') 选择
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                            b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
                         b-form(v-else)
-                            b-form-group(label-cols='3' label-size='sm' label='遮罩区')
-                                b-button(size='sm' variant='outline-dark') 选择
+                            b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                            b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
         b-button-toolbar.btn-wrapper
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(0)") 正面
             b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
@@ -44,7 +50,7 @@
 
 <script>
     import {mapGetters} from 'vuex'
-    import {STAGE_PADDING} from '../config'
+    import {STAGE_PADDING, STAGE_SCALE} from '../config'
 
     const ACTION_GROUPS = [
         {title: '试卷信息'},
@@ -52,27 +58,11 @@
         {title: '主观题'},
         {title: '选做题'},
     ];
-    const STAGE_SCALE = [0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
-
-    // const OUTLINE_STYLE = {
-    //     'border-color': '#333',
-    //     'box-shadow': '0px 3px 5px -1px rgba(0, 0, 0, 0.6);'
-    // };
-    // const outlineStyle = Object.entries(OUTLINE_STYLE).map(([key, value]) => key + ':' + value).join(';');
 
     export default {
         name: 'paper-action',
-        directives: {
-            // outline: {
-            //     inserted(el, binding) {
-            //         const target = binding.modifiers.target ? document.getElementById(binding.value) : el;
-            //         target.addEventListener('mouseover', () => el.setAttribute('style', outlineStyle));
-            //         target.addEventListener('mouseout', () => el.removeAttribute('style'));
-            //     }
-            // }
-        },
-        filters: {
-        },
+        directives: {},
+        filters: {},
         props: {
             background: {
                 type: Array,
@@ -166,6 +156,9 @@
 </script>
 
 <style lang="sass" scoped>
+    .shadow-btn
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.35)
+
     .action-panel
         position: fixed
         left: 0
@@ -175,7 +168,7 @@
         height: 100%
         padding: 0
         background: #f8f9fa
-        box-shadow: 1px 0 5px -1px rgba(0, 0, 0, 0.5)
+        box-shadow: 1px 1px 10px -1px rgba(0, 0, 0, 0.35)
 
     .action-panel-header
         cursor: pointer
