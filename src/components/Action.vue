@@ -1,7 +1,7 @@
 <template lang="pug">
     .action-wrapper
         b-container.action-panel(:style='actionPanelStyle')
-            b-card(no-body v-for='(item, index) in actionPanel.groups' :key='index' border-variant='light' bg-variant='light')
+            b-card(v-for='(item, index) in actionPanel.groups' :key='index' :style='actionPanelCardStyle(index)' border-variant='light' bg-variant='light' no-body)
                 b-card-header(header-tag='header' header-class='action-panel-header' v-b-toggle='getAccordionId(index)')
                     b-card-title.title(title-tag='span') {{ item.title }}
                     b-link.card-link(v-if='index !== 0' href='#' @click.stop='handleDrawStart(index)') 添加
@@ -9,21 +9,21 @@
                     b-card-body(body-class='action-panel-body')
                         b-form(v-if='index === 0')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='水平矫正：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("1111")') 定位点
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("2222")') 水平点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("1")') 定位点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("2")') 水平点
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='科目识别：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("3")') 选择
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='考号区：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 条形码区
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 填涂考号
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("4")') 条形码区
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("5")') 填涂考号
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='定位点：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点1
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点2
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 定位点3
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("6")') 定位点1
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("7")') 定位点2
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("8")') 定位点3
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("9")') 选择
                             b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("10")') 选择
                         b-form(v-else-if='index === 1')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
@@ -40,12 +40,27 @@
                             b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
         b-button-toolbar.btn-wrapper
-            b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(0)") 正面
-            b-button.ml-2(squared variant='secondary' @click="handlePaperIndexChange(1)") 反面
+            b-button.ml-2(squared variant='secondary' @click='handlePaperDataExport') 数据
+            b-button.ml-2(squared variant='secondary' @click='handlePaperIndexChange(0)') 正面
+            b-button.ml-2(squared variant='secondary' @click='handlePaperIndexChange(1)') 反面
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
             b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
-            b-form-file.ml-2.paper-files(v-model='paperFiles' :file-name-formatter="formatPaperFilesNames"
+            b-form-file.ml-2.paper-files(v-model='paperFiles' :file-name-formatter='formatPaperFilesNames'
                 placeholder='更换试卷图片' browse-text='浏览' accept='image/*' no-drop multiple)
+
+        b-modal(ref='dataExportModal' title='导出数据' size='lg' ok-title='确认' ok-only centered scrollable)
+            b-card.mb-3(v-for='(group, groupIndex) in exportFormatList' :key='groupIndex' :header='paperGroupHeader(groupIndex)')
+                b-list-group
+                    b-list-group-item(v-for='(item, index) in group' :key='index' :title='item.name')
+                        span.mr-5 标签{{index}}
+                        span.mr-4 X
+                            b-badge.ml-2(variant='warning') {{ item.x }}
+                        span.mr-4 Y
+                            b-badge.ml-2(variant='warning') {{ item.y }}
+                        span.mr-4 宽度
+                            b-badge.ml-2(variant='info') {{ item.width }}
+                        span.mr-4 高度
+                            b-badge.ml-2(variant='info') {{ item.height }}
 </template>
 
 <script>
@@ -64,15 +79,19 @@
         directives: {},
         filters: {},
         props: {
-            background: {
+            list: {
                 type: Array,
                 default() {
                     return [];
                 }
             },
+            background: {
+                type: Array,
+                require: true
+            },
             showIndex: {
                 type: Number,
-                default: 0
+                require: true
             }
         },
         data() {
@@ -96,6 +115,18 @@
             },
             currentScaleIndex() {
                 return this.stageScale.indexOf(this.currentScale);
+            },
+            exportFormatList() {
+                let result = [];
+                this.list.forEach(paper => {
+                    paper.forEach((group, index) => {
+                        if (!Array.isArray(result[index])) {
+                            result[index] = [];
+                        }
+                        result[index] = result[index].concat(group);
+                    });
+                });
+                return result;
             }
         },
         created() {
@@ -109,6 +140,12 @@
             }
         },
         methods: {
+            actionPanelCardStyle(index) {
+                return index > 1 ? {display: 'none'} : {};
+            },
+            paperGroupHeader(index) {
+                return this.actionPanel.groups[index].title;
+            },
             formatPaperFilesNames(files) {
                 if (files && files.length) {
                     return files.length > 1 ? '已选择正反两面试卷' : '已选择正面试卷';
@@ -118,6 +155,9 @@
             },
             getAccordionId(index) {
                 return 'accordion-' + index;
+            },
+            handlePaperDataExport() {
+                this.$refs.dataExportModal.show();
             },
             handlePaperImageChange(images) {
                 this.$emit('update:background', images);

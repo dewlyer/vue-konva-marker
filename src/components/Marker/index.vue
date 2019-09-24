@@ -1,8 +1,8 @@
 <template lang="pug">
     .marker-wrapper
-        v-stage.marker-stage(ref='stage', :config='stageConfig', :style='stageStyle',
-            @mousedown='handleStageMouseDown', @mouseup='handleStageMouseUp',
-            @mousemove='handleStageMouseMove', @mouseout='handleStageMouseOut')
+        v-stage.marker-stage(ref='stage' :config='stageConfig' :style='stageStyle'
+            @mousedown='handleStageMouseDown' @mouseup='handleStageMouseUp'
+            @mousemove='handleStageMouseMove' @mouseout='handleStageMouseOut')
             v-layer
                 v-group(v-for='(image, index) in background' ref='pageGroup' :key='index' :config='pageGroupConfig(index)')
                     background-group(:src='[image]')
@@ -27,9 +27,7 @@
         props: {
             list: {
                 type: Array,
-                default() {
-                    return [];
-                }
+                require: true
             },
             background: {
                 type: Array,
