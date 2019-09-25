@@ -47,6 +47,7 @@
                 return !this.list ? [] : this.list.map(rect => ({
                     ...rect,
                     ...getRectConfig(this.pageIndex),
+                    draggable: !!rect['editable'],
                     fill: this.color
                 }));
             }
@@ -82,6 +83,10 @@
                 //     return;
                 // }
 
+                if (!target.getAttrs()['editable']) {
+                    return;
+                }
+
                 if (!parent || parent.getClassName() === 'Transformer') {
                     return;
                 }
@@ -97,6 +102,10 @@
                 this.updateTransformer(transformerNode, selectedRect);
             },
             handleRectMouseEnter(event) {
+                if (!event.target.getAttrs()['editable']) {
+                    return;
+                }
+
                 const container = event.target.getStage().container();
                 if (container.style.cursor) {
                     this.cursorStyle = container.style.cursor;

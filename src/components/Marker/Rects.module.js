@@ -2,8 +2,7 @@ const RECT_MIN_PADDING = 20;
 
 const rectConfig = {
     fill: '#999',
-    opacity: 0.35,
-    draggable: true
+    opacity: 0.35
 };
 
 const transformerConfig = {

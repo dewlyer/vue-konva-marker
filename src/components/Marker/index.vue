@@ -110,17 +110,31 @@
                     height: Math.abs(drawStart.y - drawEnd.y)
                 });
             },
-            createNewRect({status, groupIndex, rectId}) {
+            createNewRect({status, groupIndex, rectId, editable}) {
                 if (!status) {
+                    return;
+                }
+
+                if (this.$refs.stage.getStage().findOne('.' + rectId)) {
+                    this.$bvToast.toast('标记已存在，请删除原标记再添加！', {
+                        variant: 'danger',
+                        toaster: 'b-toaster-bottom-right',
+                        autoHideDelay: 3000,
+                        appendToast: false,
+                        noCloseButton: true
+                    });
                     return;
                 }
 
                 const p = this.showIndex;
                 const i = groupIndex;
-                const rect = Object.assign({}, this.drawingRect.config, {
-                    name: rectId || `paper${p}_group${i}_x${new Date().getTime()}`
+                const id = rectId || `paper${p}_group${i}_x${new Date().getTime()}`;
+
+                this.rectList[p][i].push({
+                    ...this.drawingRect.config,
+                    name: id,
+                    editable: !!editable
                 });
-                this.rectList[p][i].push(rect);
             },
             resetDrawingStatus() {
                 this.drawingRect.start = null;
@@ -147,6 +161,7 @@
                 this.$store.commit('marker/updateDraw', {
                     draw: {
                         status: false,
+                        editable: false,
                         groupIndex: null,
                         rectId: null
                     }

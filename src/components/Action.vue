@@ -9,21 +9,21 @@
                     b-card-body(body-class='action-panel-body')
                         b-form(v-if='index === 0')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='水平矫正：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("1")') 定位点
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("2")') 水平点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("hor-correct_point", false)') 定位点
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("hor-correct_line", false)') 水平点
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='科目识别：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("3")') 选择
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("subject-discern", false)') 选择
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='考号区：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("4")') 条形码区
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("5")') 填涂考号
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("exam-no_code", true)') 条形码区
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("exam-no_fill", true)') 填涂考号
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='定位点：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("6")') 定位点1
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("7")') 定位点2
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("8")') 定位点3
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("location-point_1", false)') 定位点1
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("location-point_2", false)') 定位点2
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("location-point_3", false)') 定位点3
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("9")') 选择
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("absent-mark", true)') 选择
                             b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("10")') 选择
+                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("over-layer", true)') 选择
                         b-form(v-else-if='index === 1')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
@@ -184,14 +184,15 @@
                 }
             },
             handleDrawStart(index) {
-                this.updateDrawStatus(index);
+                this.updateDrawStatus(index, true);
             },
-            handlePaperInfoDraw(id) {
-                this.updateDrawStatus(0, id);
+            handlePaperInfoDraw(id, editable) {
+                this.updateDrawStatus(0, editable, id);
             },
-            updateDrawStatus(index, id) {
+            updateDrawStatus(index, editable, id) {
                 const draw = {
                     status: true,
+                    editable: editable,
                     groupIndex: index,
                     rectId: id || null
                 };
