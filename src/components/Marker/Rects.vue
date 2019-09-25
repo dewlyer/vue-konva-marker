@@ -1,16 +1,16 @@
 <template lang="pug">
     v-group(ref='rectsGroup')
-        v-group(ref='originGroup', v-for='(rects, index) in rectsList', :key='index')
-            v-rect(v-for='(item, i) in rects', :key='item.name', :config='item',
-                @mousedown='handleRectMouseDown($event, index)',
-                @mouseenter='handleRectMouseEnter',
-                @mouseleave='handleRectMouseLeave',
+        v-group(ref='originGroup' v-for='(rects, index) in rectsList' :key='index')
+            v-rect(v-for='(item, i) in rects' :key='item.name' :config='item'
+                @mousedown='handleRectMouseDown($event, index)'
+                @mouseenter='handleRectMouseEnter'
+                @mouseleave='handleRectMouseLeave'
                 @dragend='handleRectDataChange($event, index, i)'
                 @transformend='handleRectDataChange($event, index, i)'
                 @click='handleRectClick')
-            v-transformer(:config='transformer', @transform='handleTransform')
-        v-group(ref='selectGroup', :config='selectGroupConfig')
-            v-transformer(:config='transformer', @transform='handleTransform')
+            v-transformer(:config='transformer' @transform='handleTransform')
+        v-group(ref='selectGroup' :config='selectGroupConfig')
+            v-transformer(:config='transformer' @transform='handleTransform')
 </template>
 
 <script>
