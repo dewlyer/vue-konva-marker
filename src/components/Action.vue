@@ -40,11 +40,13 @@
                             b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
         b-button-toolbar.btn-wrapper
-            b-button.ml-2(squared variant='secondary' @click='handlePaperDataExport') 数据
-            b-button.ml-2(squared variant='secondary' @click='handlePaperIndexChange(0)') 正面
-            b-button.ml-2(squared variant='secondary' @click='handlePaperIndexChange(1)') 反面
-            b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(1)') 放大
-            b-button.ml-2(squared variant='secondary' @click='handleStageScaleChange(-1)') 缩小
+            b-button-group(v-if='paperFilesStatus')
+                b-button.ml-2(variant='secondary' @click='handlePaperIndexChange(0)' squared) 正面
+                b-button.ml-2(variant='secondary' @click='handlePaperIndexChange(1)' squared) 反面
+            b-button-group
+                b-button.ml-2(variant='secondary' @click='handleStageScaleChange(1)' squared) 放大
+                b-button.ml-2(variant='secondary' @click='handleStageScaleChange(-1)' squared) 缩小
+                b-button.ml-2(variant='secondary' @click='handlePaperDataExport' squared) 数据
             b-form-file.ml-2.paper-files(v-model='paperFiles' :file-name-formatter='formatPaperFilesNames'
                 placeholder='更换试卷图片' browse-text='浏览' accept='image/*' no-drop multiple)
 
@@ -97,6 +99,7 @@
         data() {
             return {
                 paperFiles: null,
+                paperFilesStatus: null,
                 stageScale: STAGE_SCALE,
                 currentScale: 1,
                 actionPanel: {
@@ -131,11 +134,13 @@
         },
         created() {
             this.currentScale = this.scale;
+            this.updatePaperFilesStatus(this.background);
         },
         watch: {
             paperFiles(files) {
                 if (files && files.length) {
                     this.loadLocalImages(files.slice(0, 2));
+                    this.updatePaperFilesStatus(files);
                 }
             }
         },
@@ -146,11 +151,17 @@
             paperGroupHeader(index) {
                 return this.actionPanel.groups[index].title;
             },
-            formatPaperFilesNames(files) {
-                if (files && files.length) {
-                    return files.length > 1 ? '已选择正反两面试卷' : '已选择正面试卷';
-                } else {
-                    return '选择试卷无效';
+            updatePaperFilesStatus(files) {
+                this.paperFilesStatus = files && files.length ? files.length > 1 : null;
+            },
+            formatPaperFilesNames() {
+                switch (this.paperFilesStatus) {
+                    case false:
+                        return '已选择正面试卷';
+                    case true:
+                        return '已选择正反两面试卷';
+                    default:
+                        return '选择试卷无效';
                 }
             },
             getAccordionId(index) {
