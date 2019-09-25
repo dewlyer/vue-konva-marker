@@ -12,7 +12,9 @@
 
 <script>
     import {
-        rectColors, rectConfig, transformerConfig,
+        rectColors,
+        getRectConfig,
+        getTransformerConfig,
         getStageCoordsRange
     } from './Rects.module'
 
@@ -24,6 +26,10 @@
                     return [];
                 }
             },
+            pageIndex: {
+                type: Number,
+                required: true
+            },
             index: {
                 type: Number,
                 required: true
@@ -31,7 +37,7 @@
         },
         data() {
             return {
-                transformer: transformerConfig,
+                transformer: null,
                 color: null,
                 cursorStyle: 'default'
             };
@@ -40,12 +46,13 @@
             rects() {
                 return !this.list ? [] : this.list.map(rect => ({
                     ...rect,
-                    ...rectConfig,
+                    ...getRectConfig(this.pageIndex),
                     fill: this.color
                 }));
             }
         },
         created() {
+            this.transformer = getTransformerConfig(this.pageIndex);
             this.color = rectColors[this.index];
         },
         methods: {
@@ -103,7 +110,7 @@
             handleTransform(event) {
                 const transformer = event.currentTarget;
                 const {layerX, layerY} = event.evt;
-                const range = getStageCoordsRange(transformer.getStage());
+                const range = getStageCoordsRange(this.pageIndex, transformer.getStage());
 
                 if (layerX < range.x || layerX > range.w) {
                     transformer.stopTransform();
