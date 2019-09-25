@@ -1,6 +1,6 @@
 <template lang="pug">
     v-group(ref='backgroundGroup' :config='config')
-        v-image(v-for='(item, index) in list' :key='index' :config='item')
+        v-image(v-for='(item, index) in list' :key='index' :config='item' @click='handleImageClick')
 </template>
 
 <script>
@@ -25,6 +25,11 @@
             };
         },
         methods: {
+            handleImageClick(event) {
+                const layer = event.target.getLayer();
+                layer.find('Transformer').detach();
+                layer.batchDraw();
+            },
             resetGroupConfig() {
                 this.config.width = 0;
                 this.config.height = 0;

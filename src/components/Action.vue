@@ -89,11 +89,11 @@
             },
             background: {
                 type: Array,
-                require: true
+                required: true
             },
             showIndex: {
                 type: Number,
-                require: true
+                required: true
             }
         },
         data() {

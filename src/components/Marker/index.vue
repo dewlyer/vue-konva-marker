@@ -6,7 +6,7 @@
             v-layer
                 v-group(v-for='(image, index) in background' ref='pageGroup' :key='index' :config='pageGroupConfig(index)')
                     background-group(:src='[image]')
-                    rects-group(:list.sync='rectList[index]')
+                    rects-group(v-for='(rects, i) in rectList[index]' :key='i' :index='i' :list='rects' @update='updateRectListItem($event, index, i)')
                     draw-group(:rect='drawingRect')
 </template>
 
@@ -27,7 +27,7 @@
         props: {
             list: {
                 type: Array,
-                require: true
+                required: true
             },
             background: {
                 type: Array,
@@ -73,6 +73,11 @@
             }
         },
         methods: {
+            updateRectListItem(rects, groupIndex, rectIndex) {
+                let newList = this.easyDeepCopy(this.rectList);
+                newList[groupIndex][rectIndex] = rects;
+                this.rectList = newList;
+            },
             pageGroupConfig(index) {
                 return {visible: this.showIndex === index}
             },

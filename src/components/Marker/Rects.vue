@@ -1,16 +1,13 @@
 <template lang="pug">
-    v-group(ref='rectsGroup')
-        v-group(ref='originGroup' v-for='(rects, index) in rectsList' :key='index')
-            v-rect(v-for='(item, i) in rects' :key='item.name' :config='item'
-                @mousedown='handleRectMouseDown($event, index)'
-                @mouseenter='handleRectMouseEnter'
-                @mouseleave='handleRectMouseLeave'
-                @dragend='handleRectDataChange($event, index, i)'
-                @transformend='handleRectDataChange($event, index, i)'
-                @click='handleRectClick')
-            v-transformer(:config='transformer' @transform='handleTransform')
-        v-group(ref='selectGroup' :config='selectGroupConfig')
-            v-transformer(:config='transformer' @transform='handleTransform')
+    v-group
+        v-rect(v-for='(item, index) in rects' :key='item.name' :config='item'
+            @mousedown='handleRectMouseDown'
+            @mouseenter='handleRectMouseEnter'
+            @mouseleave='handleRectMouseLeave'
+            @dragend='handleRectDataChange($event, index)'
+            @transformend='handleRectDataChange($event, index)'
+            @click='handleRectClick')
+        v-transformer(:config='transformer' @transform='handleTransform')
 </template>
 
 <script>
@@ -26,52 +23,39 @@
                 default() {
                     return [];
                 }
+            },
+            index: {
+                type: Number,
+                required: true
             }
         },
         data() {
             return {
-                rectColors: rectColors,
                 transformer: transformerConfig,
-                cursorStyle: 'default',
-                selectGroupConfig: {
-                    name: 'selectGroup',
-                    x: 0,
-                    y: 0,
-                    draggable: true
-                }
+                color: null,
+                cursorStyle: 'default'
             };
         },
         computed: {
-            rectsList() {
-                return !this.list ? [] : this.list.map((rects, index) => this.getListEx(rects, index));
+            rects() {
+                return !this.list ? [] : this.list.map(rect => ({
+                    ...rect,
+                    ...rectConfig,
+                    fill: this.color
+                }));
             }
         },
+        created() {
+            this.color = rectColors[this.index];
+        },
         methods: {
-            getListEx(rects, index) {
-                if (!rects) {
-                    return [];
-                }
-
-                const selectColor = this.rectColors[index];
-                const selectStyle = {};
-                if (selectColor) {
-                    selectStyle.fill = selectColor;
-                }
-                return rects.map(item => Object.assign(item, rectConfig, selectStyle));
-            },
-            handleRectDataChange(event, groupIndex, rectIndex) {
+            handleRectDataChange(event, index) {
                 const target = event.target;
                 const {x, y, width, height, scaleX, scaleY} = target.attrs;
                 const rectAttr = {x, y, width: Math.round(width * scaleX), height: Math.round(height * scaleY)};
-                const list = this.list.map((group, index) => {
-                    if (index === groupIndex) {
-                        return group.map((rect, i) => i === rectIndex ? Object.assign({}, rect, rectAttr) : rect);
-                    } else {
-                        return group;
-                    }
-                });
+                const list = this.list.map((rect, i) => i === index ? Object.assign({}, rect, rectAttr) : rect);
                 target.scale({x: 1, y: 1});
-                this.$emit('update:list', list);
+                this.$emit('update', list);
             },
             handleRectClick(event) {
                 const targetRect = event.currentTarget;
@@ -81,57 +65,15 @@
                 rectGroup.moveToTop();
                 rectLayer.batchDraw();
             },
-            handleRectCtrlClick(event, groupIndex) {
-                const rectsGroup = this.$refs.rectsGroup.getStage();
-                const selectGroup = this.$refs.selectGroup.getStage();
-                const {x, y} = selectGroup.getPosition();
-                const target = event.target;
-                const parent = target.getParent();
-                const parentName = parent.name();
-
-                target.getLayer().find('Transformer').detach();
-
-                let originIndex = '';
-                let originGroup = null;
-
-                // console.log(parent);
-                // console.log(parentId);
-                // console.log(selectGroup.absolutePosition());
-                // console.log(selectGroup.getPosition());
-
-                if (parentName === 'selectGroup') {
-                    originIndex = target.getAttr('origin-group-index');
-                    originGroup = this.$refs.originGroup[originIndex].getStage();
-                    target.draggable(true);
-                    target.setAttr('opacity', 0.35);
-                    target.move({x: x, y: y});
-                    target.moveTo(originGroup);
-                } else {
-                    target.setAttr('origin-group-index', groupIndex);
-                    target.draggable(false);
-                    target.setAttr('opacity', 0.6);
-                    target.move({x: -x, y: -y});
-                    target.moveTo(selectGroup);
-                }
-
-                rectsGroup.draw();
-            },
-            handleRectShiftClick() {
-            },
-            handleRectMouseDown(event, groupIndex) {
+            handleRectMouseDown(event) {
                 const target = event.target;
                 const parent = target.getParent();
                 const className = target.getClassName();
 
-                if (event.evt.ctrlKey) {
-                    this.handleRectCtrlClick(event, groupIndex);
-                    return;
-                }
-
-                if (event.evt.shiftKey) {
-                    this.handleRectShiftClick(event);
-                    return;
-                }
+                // if (event.evt.ctrlKey) {
+                //     this.handleRectCtrlClick(event, groupIndex);
+                //     return;
+                // }
 
                 if (!parent || parent.getClassName() === 'Transformer') {
                     return;
