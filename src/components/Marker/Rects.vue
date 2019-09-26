@@ -1,12 +1,14 @@
 <template lang="pug">
     v-group
-        v-rect(v-for='(item, index) in rects' :key='item.name' :config='item'
-            @mousedown='handleRectMouseDown'
-            @mouseenter='handleRectMouseEnter'
-            @mouseleave='handleRectMouseLeave'
-            @dragend='handleRectDataChange($event, index)'
-            @transformend='handleRectDataChange($event, index)'
-            @click='handleRectClick')
+        v-group(v-for='(item, index) in rects' :key='item.name' :config='getGroupConfig(item)'
+            @transformend='handleGroupSizeChange($event, index)'
+            @dragend='handleGroupPositionChange($event, index)'
+            @mousedown='handleGroupMouseDown'
+            @click='handleRectGroupClick')
+            v-text(:config='getTextConfig(item)')
+            v-rect(:config='getRectConfig(item)'
+                @mouseenter='handleRectMouseEnter'
+                @mouseleave='handleRectMouseLeave')
         v-transformer(:config='transformer' @transform='handleTransform')
 </template>
 
@@ -57,49 +59,77 @@
             this.color = rectColors[this.index];
         },
         methods: {
-            handleRectDataChange(event, index) {
-                const target = event.target;
-                const {x, y, width, height, scaleX, scaleY} = target.attrs;
-                const rectAttr = {x, y, width: Math.round(width * scaleX), height: Math.round(height * scaleY)};
-                const list = this.list.map((rect, i) => i === index ? Object.assign({}, rect, rectAttr) : rect);
-                target.scale({x: 1, y: 1});
-                this.$emit('update', list);
+            getGroupConfig({x, y, width, height, draggable, dragBoundFunc}) {
+                return {x, y, width, height, draggable, dragBoundFunc};
             },
-            handleRectClick(event) {
-                const targetRect = event.currentTarget;
-                const rectGroup = targetRect.getParent();
-                const rectLayer = targetRect.getLayer();
-                targetRect.moveToTop();
-                rectGroup.moveToTop();
-                rectLayer.batchDraw();
+            getTextConfig(item) {
+                return {text: item.name};
             },
-            handleRectMouseDown(event) {
-                const target = event.target;
+            getRectConfig(item) {
+                return {
+                    ...item,
+                    x: 0,
+                    y: 0,
+                    draggable: false
+                };
+            },
+            handleRectGroupClick(event) {
+                const target = event.currentTarget;
                 const parent = target.getParent();
-                const className = target.getClassName();
+                const page = parent.getParent();
+                target.moveToTop();
+                parent.moveToTop();
+                page.draw();
+            },
+            handleGroupPositionChange(event, index) {
+                const {x, y} = event.target.getAttrs();
+                const list = this.list.map((rect, i) => {
+                    if (i === index) {
+                        rect.x = x;
+                        rect.y = y;
+                    }
+                    return rect;
+                });
+                this.$emit('change', list);
+            },
+            handleGroupSizeChange(event, index) {
+                const target = event.target;
+                const {width, height, scaleX, scaleY} = target.getAttrs();
+                const list = this.list.map((rect, i) => {
+                    if (i === index) {
+                        rect.width = Math.round(width * scaleX);
+                        rect.height = Math.round(height * scaleY);
+                    }
+                    return rect;
+                });
+                target.scale({x: 1, y: 1});
+                this.$emit('change', list);
+            },
+            handleGroupMouseDown(event) {
+                const rect = event.target;
+                const group = event.currentTarget;
 
-                // if (event.evt.ctrlKey) {
-                //     this.handleRectCtrlClick(event, groupIndex);
-                //     return;
-                // }
+                const groupParent = group.getParent();
+                const rectParent = rect.getParent();
+                const rectClassName = rect.getClassName();
 
-                if (!target.getAttrs()['editable']) {
+                if (rectClassName !== 'Rect') {
                     return;
                 }
 
-                if (!parent || parent.getClassName() === 'Transformer') {
+                if (!rectParent || rectParent.getClassName() === 'Transformer') {
                     return;
                 }
 
-                if (className !== 'Rect') {
+                if (!rect.getAttrs()['editable']) {
                     return;
                 }
 
-                const transformerNode = parent.findOne('Transformer');
-                const selectedRect = target.name();
+                const transformerTarget = group;
+                const transformerNode = groupParent.findOne('Transformer');
 
-                target.getLayer().find('Transformer').detach();
-                this.updateTransformer(transformerNode, selectedRect);
+                rect.getLayer().find('Transformer').detach();
+                this.updateTransformer(transformerNode, transformerTarget);
             },
             handleRectMouseEnter(event) {
                 if (!event.target.getAttrs()['editable']) {
@@ -107,8 +137,9 @@
                 }
 
                 const container = event.target.getStage().container();
-                if (container.style.cursor) {
-                    this.cursorStyle = container.style.cursor;
+                const style = container.style.cursor;
+                if (style) {
+                    this.cursorStyle = style;
                 }
                 container.style.cursor = 'move';
             },
@@ -129,16 +160,13 @@
                     transformer.stopTransform();
                 }
             },
-            updateTransformer(transformerNode, selectedRect) {
-                const stage = transformerNode.getStage();
-                const selectedNode = stage.findOne('.' + selectedRect);
-
-                if (selectedNode === transformerNode.node()) {
+            updateTransformer(transformerNode, transformerTarget) {
+                if (transformerTarget === transformerNode.node()) {
                     return;
                 }
 
-                if (selectedNode) {
-                    transformerNode.attachTo(selectedNode);
+                if (transformerTarget) {
+                    transformerNode.attachTo(transformerTarget);
                 } else {
                     transformerNode.detach();
                 }

@@ -6,8 +6,9 @@
             v-layer
                 v-group(v-for='(image, index) in background' ref='pageGroup' :key='index' :config='pageGroupConfig(index)')
                     background-group(:src='[image]')
-                    rects-group(v-for='(rects, i) in rectList[index]' :key='i' :pageIndex='index' :index='i' :list='rects'
-                        @update='updateRectListItem($event, index, i)')
+                    rects-group(v-for='(rects, i) in rectList[index]' :key='i'
+                        :pageIndex='index' :index='i' :list='rects'
+                        @change='updateRectListItem($event, index, i)')
                     draw-group(:rect='drawingRect')
 </template>
 
