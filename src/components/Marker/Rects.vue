@@ -1,7 +1,8 @@
 <template lang="pug">
     v-group
         v-group(v-for='(item, index) in rects' :key='item.name' :config='getGroupConfig(item)'
-            @transformend='handleGroupSizeChange($event, index)'
+            @transform='handleGroupSizeChanging($event, item)'
+            @transformend='handleGroupSizeChanged($event, index)'
             @dragend='handleGroupPositionChange($event, index)'
             @mousedown='handleGroupMouseDown'
             @click='handleRectGroupClick')
@@ -63,7 +64,12 @@
                 return {x, y, width, height, draggable, dragBoundFunc};
             },
             getTextConfig(item) {
-                return {text: item.name};
+                return {
+                    x: 0,
+                    y: 0,
+                    fontSize: 12,
+                    text: item.name
+                };
             },
             getRectConfig(item) {
                 return {
@@ -92,18 +98,33 @@
                 });
                 this.$emit('change', list);
             },
-            handleGroupSizeChange(event, index) {
+            handleGroupSizeChanged(event, index) {
                 const target = event.target;
-                const {width, height, scaleX, scaleY} = target.getAttrs();
+                const {scaleX, scaleY} = target.getAttrs();
                 const list = this.list.map((rect, i) => {
                     if (i === index) {
-                        rect.width = Math.round(width * scaleX);
-                        rect.height = Math.round(height * scaleY);
+                        return {
+                            ...rect,
+                            scale_x: scaleX,
+                            scale_y: scaleY
+                        }
                     }
                     return rect;
                 });
-                target.scale({x: 1, y: 1});
                 this.$emit('change', list);
+            },
+            handleGroupSizeChanging(event) {
+                const target = event.currentTarget;
+                const {scaleX, scaleY} = target.getAttrs();
+                const rect = target.findOne('Rect');
+                const text = target.findOne('Text');
+                const rectSize = rect.getClientRect();
+                const textSize = text.getClientRect();
+                const textVisible = rectSize.width > Math.round(textSize.width) &&
+                    rectSize.height > Math.round(textSize.height);
+
+                text.scale({x: 1 / scaleX, y: 1 / scaleY});
+                text.visible(textVisible);
             },
             handleGroupMouseDown(event) {
                 const rect = event.target;
@@ -125,11 +146,9 @@
                     return;
                 }
 
-                const transformerTarget = group;
                 const transformerNode = groupParent.findOne('Transformer');
-
                 rect.getLayer().find('Transformer').detach();
-                this.updateTransformer(transformerNode, transformerTarget);
+                this.updateTransformer(transformerNode, group);
             },
             handleRectMouseEnter(event) {
                 if (!event.target.getAttrs()['editable']) {
