@@ -8,22 +8,9 @@
                 b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0')
                     b-card-body(body-class='action-panel-body')
                         b-form(v-if='index === 0')
-                            b-form-group.text-muted(label-cols='4' label-size='sm' label='水平矫正：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("hor-correct_point", false)') 定位点
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("hor-correct_line", false)') 水平点
-                            b-form-group.text-muted(label-cols='4' label-size='sm' label='科目识别：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("subject-discern", false)') 选择
-                            b-form-group.text-muted(label-cols='4' label-size='sm' label='考号区：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("exam-no_code", true)') 条形码区
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("exam-no_fill", true)') 填涂考号
-                            b-form-group.text-muted(label-cols='4' label-size='sm' label='定位点：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("location-point_1", false)') 定位点1
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("location-point_2", false)') 定位点2
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("location-point_3", false)') 定位点3
-                            b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("absent-mark", true)') 选择
-                            b-form-group.text-muted.mb-0(label-cols='4' label-size='sm' label='遮罩区：')
-                                b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light' @click='handlePaperInfoDraw("over-layer", true)') 选择
+                            b-form-group.text-muted(v-for='group in actionPanel.infoGroup' label-cols='4' label-size='sm' :label='group.title')
+                                b-button.mr-2.mb-2.shadow-btn(v-for='item in group.item' size='sm' variant='light'
+                                    @click='handlePaperInfoDraw(item.name, item.params)') {{ getActionInfoTexts(item.name).button }}
                         b-form(v-else-if='index === 1')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')
                                 b-button.mr-2.mb-2.shadow-btn(size='sm' variant='light') 选择
@@ -67,14 +54,10 @@
 
 <script>
     import {mapGetters} from 'vuex'
-    import {STAGE_PADDING, STAGE_SCALE} from '../config'
-
-    const ACTION_GROUPS = [
-        {title: '试卷信息'},
-        {title: '客观题'},
-        {title: '主观题'},
-        {title: '选做题'},
-    ];
+    import {
+        STAGE_PADDING, STAGE_SCALE,
+        ACTION_GROUPS, ACTION_INFO_GROUP, ACTION_INFO_MAP,
+    } from '../config'
 
     export default {
         name: 'paper-action',
@@ -104,7 +87,9 @@
                 currentScale: 1,
                 actionPanel: {
                     width: STAGE_PADDING,
-                    groups: ACTION_GROUPS
+                    groups: ACTION_GROUPS,
+                    infoGroup: ACTION_INFO_GROUP,
+                    infoMap: ACTION_INFO_MAP
                 }
             }
         },
@@ -145,6 +130,9 @@
             }
         },
         methods: {
+            getActionInfoTexts(key) {
+                return this.actionPanel.infoMap[key];
+            },
             actionPanelCardStyle(index) {
                 return index > 1 ? {display: 'none'} : {};
             },
@@ -184,17 +172,21 @@
                 }
             },
             handleDrawStart(index) {
-                this.updateDrawStatus(index, true);
+                this.updateDrawStatus(index, true, null, {});
             },
             handlePaperInfoDraw(id, editable) {
-                this.updateDrawStatus(0, editable, id);
+                this.updateDrawStatus(0, editable, id, {});
             },
-            updateDrawStatus(index, editable, id) {
+            updateDrawStatus(groupIndex, editable, id, attrs) {
+                const texts = this.getActionInfoTexts(id);
+                const label = texts && texts.label || null;
                 const draw = {
                     status: true,
-                    editable: editable,
-                    groupIndex: index,
-                    rectId: id || null
+                    rectId: id || null,
+                    label,
+                    groupIndex,
+                    editable,
+                    attrs
                 };
                 this.$store.commit('marker/updateDraw', {draw});
             },

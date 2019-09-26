@@ -111,7 +111,7 @@
                     height: Math.abs(drawStart.y - drawEnd.y)
                 });
             },
-            createNewRect({status, groupIndex, rectId, editable}) {
+            createNewRect({status, groupIndex, rectId, editable, label, attrs}) {
                 if (!status) {
                     return;
                 }
@@ -134,7 +134,9 @@
                 this.rectList[p][i].push({
                     ...this.drawingRect.config,
                     name: id,
-                    editable: !!editable
+                    editable: !!editable,
+                    label,
+                    attrs
                 });
             },
             resetDrawingStatus() {
@@ -159,14 +161,16 @@
                 this.drawingRect.visible = false;
                 this.createNewRect(this.draw);
                 this.resetDrawingStatus();
-                this.$store.commit('marker/updateDraw', {
-                    draw: {
-                        status: false,
-                        editable: false,
-                        groupIndex: null,
-                        rectId: null
-                    }
-                });
+
+                const draw = {
+                    status: false,
+                    rectId: null,
+                    label: null,
+                    groupIndex: null,
+                    editable: false,
+                    attrs: {}
+                };
+                this.$store.commit('marker/updateDraw', {draw});
             },
             doDrawingRect(event) {
                 if (!this.draw.status) {

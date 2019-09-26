@@ -1,16 +1,18 @@
 <template lang="pug">
     v-group
+        v-transformer(:config='transformer' @transform='handleTransform')
         v-group(v-for='(item, index) in rects' :key='item.name' :config='getGroupConfig(item)'
             @transform='handleGroupSizeChanging($event, item)'
             @transformend='handleGroupSizeChanged($event, index)'
             @dragend='handleGroupPositionChange($event, index)'
             @mousedown='handleGroupMouseDown'
             @click='handleRectGroupClick')
-            v-text(:config='getTextConfig(item)')
             v-rect(:config='getRectConfig(item)'
                 @mouseenter='handleRectMouseEnter'
                 @mouseleave='handleRectMouseLeave')
-        v-transformer(:config='transformer' @transform='handleTransform')
+            v-label(:config='{opacity: 0.9}')
+                v-tag(:config='{fill: "#ff0"}')
+                v-text(:config='getTextConfig(item)')
 </template>
 
 <script>
@@ -64,11 +66,11 @@
                 return {x, y, width, height, draggable, dragBoundFunc};
             },
             getTextConfig(item) {
+                let text = item.label && item.label.toUpperCase();
                 return {
-                    x: 0,
-                    y: 0,
                     fontSize: 12,
-                    text: item.name
+                    fill: '#444',
+                    text
                 };
             },
             getRectConfig(item) {
@@ -116,15 +118,19 @@
             handleGroupSizeChanging(event) {
                 const target = event.currentTarget;
                 const {scaleX, scaleY} = target.getAttrs();
+
                 const rect = target.findOne('Rect');
+                const label = target.findOne('Label');
                 const text = target.findOne('Text');
+
                 const rectSize = rect.getClientRect();
                 const textSize = text.getClientRect();
+
                 const textVisible = rectSize.width > Math.round(textSize.width) &&
                     rectSize.height > Math.round(textSize.height);
 
-                text.scale({x: 1 / scaleX, y: 1 / scaleY});
-                text.visible(textVisible);
+                label.scale({x: 1 / scaleX, y: 1 / scaleY});
+                label.visible(textVisible);
             },
             handleGroupMouseDown(event) {
                 const rect = event.target;

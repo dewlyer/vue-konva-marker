@@ -3,11 +3,12 @@
     [
       {
         "name": "paper0_group0_s1",
-        "x": 100,
-        "y": 100,
+        "x": 60,
+        "y": 60,
         "width": 50,
         "height": 50,
-        "editable": false
+        "editable": false,
+        "label": "正面信息标签1"
       }
     ],
     [
@@ -17,7 +18,8 @@
         "y": 120,
         "width": 100,
         "height": 100,
-        "editable": true
+        "editable": true,
+        "label": "正面客观题标签1"
       }
     ],
     [
@@ -27,7 +29,8 @@
         "y": 220,
         "width": 100,
         "height": 100,
-        "editable": true
+        "editable": true,
+        "label": "正面客主观题签1"
       }
     ],
     [
@@ -37,7 +40,8 @@
         "y": 320,
         "width": 100,
         "height": 100,
-        "editable": true
+        "editable": true,
+        "label": "正面选做题标签1"
       }
     ]
   ],
@@ -49,7 +53,8 @@
         "y": 100,
         "width": 50,
         "height": 50,
-        "editable": true
+        "editable": true,
+        "label": "反面信息标签1"
       }
     ],
     [
@@ -59,7 +64,8 @@
         "y": 220,
         "width": 180,
         "height": 600,
-        "editable": true
+        "editable": true,
+        "label": "反面客观题标签1"
       }
     ],
     [
@@ -69,7 +75,8 @@
         "y": 420,
         "width": 130,
         "height": 160,
-        "editable": true
+        "editable": true,
+        "label": "反面客主观题签1"
       }
     ],
     [
@@ -79,7 +86,8 @@
         "y": 320,
         "width": 130,
         "height": 150,
-        "editable": true
+        "editable": true,
+        "label": "反面选做题标签1"
       }
     ]
   ]
