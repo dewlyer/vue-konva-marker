@@ -62,6 +62,10 @@
                     visible: false,
                     start: null,
                     end: null,
+                },
+                questionCreate: {
+                    no: null,
+                    score: null
                 }
             };
         },
@@ -112,13 +116,26 @@
                 });
             },
             createNewRectPrompt(result) {
-                const content = '请输入题号';
+                const messageVNode = (
+                    <b-form>
+                        <b-form-group label-cols='2' label='新增题号:' label-for='questionCreateInput-1'>
+                            <b-form-input id='questionCreateInput-1' placeholder='请输入题号' required='required'
+                                          v-model={this.questionCreate.no}/>
+                        </b-form-group>
+                        <b-form-group label-cols='2' label='对应分数:' label-for='questionCreateInput-2'>
+                            <b-form-input id='questionCreateInput-2' placeholder='请输入分数' required='required'
+                                          v-model={this.questionCreate.score}/>
+                        </b-form-group>
+                    </b-form>
+                );
                 const option = {
+                    id: 'questionCreateModal',
                     title: '新增题目',
                     size: 'md',
                     buttonSize: 'sm',
                     okTitle: '确认',
                     cancelTitle: '取消',
+                    hideHeaderClose: false,
                     centered: true,
                     scrollable: true
                 };
@@ -126,9 +143,9 @@
                     if (result.groupIndex === 0) {
                         resolve(result)
                     } else {
-                        this.$bvModal.msgBoxConfirm(content, option).then(value => {
-                            result.rect.label = '123123';
-                            return value ? resolve(result) : reject();
+                        this.$bvModal.msgBoxConfirm([messageVNode], option).then(value => {
+                            result.rect.label = `题号 ${this.questionCreate.no} （分数 ${this.questionCreate.score}）`;
+                            value ? resolve(result) : reject();
                         });
                     }
                 });
@@ -249,6 +266,18 @@
                 stage.batchDraw();
                 // stage.draw();
             }
+        },
+        mounted() {
+            this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
+                if (modalId === 'questionCreateModal' && bvEvent.trigger === 'ok') {
+                    if (this.questionCreate.no && this.questionCreate.score) {
+                        // console.log(bvEvent)
+                    } else {
+                        window.alert('请输入题号和分数');
+                        bvEvent.preventDefault();
+                    }
+                }
+            })
         },
         created() {
             this.rectList = this.easyDeepCopy(this.list);
