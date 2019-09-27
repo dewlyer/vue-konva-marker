@@ -111,32 +111,45 @@
                     height: Math.abs(drawStart.y - drawEnd.y)
                 });
             },
+            createNewRectPrompt(result) {
+                const content = '请输入题号';
+                const option = {
+                    title: '新增题目',
+                    size: 'md',
+                    buttonSize: 'sm',
+                    okTitle: '确认',
+                    cancelTitle: '取消',
+                    centered: true,
+                    scrollable: true
+                };
+                return new Promise((resolve, reject) => {
+                    if (result.groupIndex === 0) {
+                        resolve(result)
+                    } else {
+                        this.$bvModal.msgBoxConfirm(content, option).then(value => {
+                            result.rect.label = '123123';
+                            return value ? resolve(result) : reject();
+                        });
+                    }
+                });
+            },
             createNewRect({status, groupIndex, rectId, editable, label, attrs}) {
-                if (!status) {
-                    return;
-                }
-
-                if (this.$refs.stage.getStage().findOne('.' + rectId)) {
-                    this.$bvToast.toast('标记已存在，请删除原标记再添加！', {
-                        variant: 'danger',
-                        toaster: 'b-toaster-bottom-right',
-                        autoHideDelay: 3000,
-                        appendToast: false,
-                        noCloseButton: true
-                    });
-                    return;
-                }
-
-                const p = this.showIndex;
-                const i = groupIndex;
-                const id = rectId || `paper${p}_group${i}_x${new Date().getTime()}`;
-
-                this.rectList[p][i].push({
-                    ...this.drawingRect.config,
-                    name: id,
-                    editable: !!editable,
-                    label,
-                    attrs
+                return new Promise((resolve, reject) => {
+                    if (!status) {
+                        reject(false);
+                    } else if (this.$refs.stage.getStage().findOne('.' + rectId)) {
+                        reject('标记已存在，请删除原标记再添加！');
+                    } else {
+                        const pageIndex = this.showIndex;
+                        const rect = {
+                            ...this.drawingRect.config,
+                            name: rectId || `paper${pageIndex}_group${groupIndex}_x${new Date().getTime()}`,
+                            editable: !!editable,
+                            label,
+                            attrs
+                        };
+                        resolve({pageIndex, groupIndex, rect});
+                    }
                 });
             },
             resetDrawingStatus() {
@@ -158,19 +171,35 @@
                 if (!this.draw.status) {
                     return;
                 }
-                this.drawingRect.visible = false;
-                this.createNewRect(this.draw);
-                this.resetDrawingStatus();
 
-                const draw = {
-                    status: false,
-                    rectId: null,
-                    label: null,
-                    groupIndex: null,
-                    editable: false,
-                    attrs: {}
-                };
-                this.$store.commit('marker/updateDraw', {draw});
+                this.createNewRect(this.draw).then(result => {
+                    return this.createNewRectPrompt(result);
+                }).then(({pageIndex, groupIndex, rect}) => {
+                    this.rectList[pageIndex][groupIndex].push(rect);
+                }).finally(() =>{
+                    this.drawingRect.visible = false;
+                    this.resetDrawingStatus();
+                    this.$store.commit('marker/updateDraw', {
+                        draw: {
+                            status: false,
+                            rectId: null,
+                            label: null,
+                            groupIndex: null,
+                            editable: false,
+                            attrs: {}
+                        }
+                    });
+                }).catch(error => {
+                    if (error) {
+                        this.$bvToast.toast(error, {
+                            variant: 'danger',
+                            toaster: 'b-toaster-bottom-right',
+                            autoHideDelay: 3000,
+                            appendToast: false,
+                            noCloseButton: true
+                        });
+                    }
+                });
             },
             doDrawingRect(event) {
                 if (!this.draw.status) {
