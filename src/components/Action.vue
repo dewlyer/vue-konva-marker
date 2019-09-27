@@ -50,6 +50,11 @@
                             b-badge.ml-2(variant='info') {{ item.width }}
                         span.mr-4 高度
                             b-badge.ml-2(variant='info') {{ item.height }}
+                        template(v-if='item.attrs')
+                            hr
+                            div.mr-4()
+                                span.mr-4 题号： {{ item.attrs.no }}
+                                span.mr-4 分数： {{ item.attrs.score }}
 </template>
 
 <script>

@@ -144,7 +144,9 @@
                         resolve(result)
                     } else {
                         this.$bvModal.msgBoxConfirm([messageVNode], option).then(value => {
-                            result.rect.label = `题号 ${this.questionCreate.no} （分数 ${this.questionCreate.score}）`;
+                            const {no, score} = this.questionCreate;
+                            result.rect.attrs = {no, score};
+                            result.rect.label = `题号 ${no} （分数 ${score}）`;
                             value ? resolve(result) : reject();
                         });
                     }
@@ -194,6 +196,8 @@
                 }).then(({pageIndex, groupIndex, rect}) => {
                     this.rectList[pageIndex][groupIndex].push(rect);
                 }).finally(() =>{
+                    this.questionCreate.score = null;
+                    this.questionCreate.no = null;
                     this.drawingRect.visible = false;
                     this.resetDrawingStatus();
                     this.$store.commit('marker/updateDraw', {
