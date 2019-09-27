@@ -8,8 +8,8 @@
                 b-collapse(accordion='action-panel' :id='getAccordionId(index)' :visible='index === 0')
                     b-card-body(body-class='action-panel-body')
                         b-form(v-if='index === 0')
-                            b-form-group.text-muted(v-for='group in actionPanel.infoGroup' label-cols='4' label-size='sm' :label='group.title')
-                                b-button.mr-2.mb-2.shadow-btn(v-for='item in group.item' size='sm' variant='light'
+                            b-form-group.text-muted(v-for='group in actionPanel.infoGroup' label-cols='4' label-size='sm' :label='group.title' :key='group.title')
+                                b-button.mr-2.mb-2.shadow-btn(v-for='item in group.item' size='sm' variant='light' :key='item.name'
                                     @click='handlePaperInfoDraw(item.name, item.params)') {{ getActionInfoTexts(item.name).button }}
                         b-form(v-else-if='index === 1')
                             b-form-group.text-muted(label-cols='4' label-size='sm' label='缺考：')

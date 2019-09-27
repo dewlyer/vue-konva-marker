@@ -12,7 +12,7 @@
                     draw-group(:rect='drawingRect')
 </template>
 
-<script>
+<script type="text/jsx">
     import {mapGetters} from 'vuex'
     import backgroundGroup from './Background'
     import RectsGroup from './Rects'
@@ -275,6 +275,7 @@
             this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
                 if (modalId === 'questionCreateModal' && bvEvent.trigger === 'ok') {
                     if (this.questionCreate.no && this.questionCreate.score) {
+                        // TODO: Add Rect Remove Action
                         // console.log(bvEvent)
                     } else {
                         window.alert('请输入题号和分数');
