@@ -3,17 +3,21 @@
         v-stage.marker-stage(ref='stage' :config='stageConfig' :style='stageStyle'
             @mousedown='handleStageMouseDown' @mouseup='handleStageMouseUp'
             @mousemove='handleStageMouseMove' @mouseout='handleStageMouseOut')
-            v-layer
+            v-layer(ref='layer')
                 v-group(v-for='(image, index) in background' ref='pageGroup' :key='index' :config='pageGroupConfig(index)')
                     background-group(:src='[image]')
                     rects-group(v-for='(rects, i) in rectList[index]' :key='i'
                         :pageIndex='index' :index='i' :list='rects'
-                        @change='updateRectListItem($event, index, i)')
+                        @context='handlerRectContextMenu($event, index, i)'
+                        @change='updateRectListGroup($event, index, i)')
                     draw-group(:rect='drawingRect')
+        vue-simple-context-menu(ref='rectContextMenu' elementId='contextMenuA' :options='rectContextOptions'
+            @option-clicked='handlerRectContextMenuClick')
 </template>
 
 <script type="text/jsx">
     import {mapGetters} from 'vuex'
+    import VueSimpleContextMenu from 'vue-simple-context-menu'
     import backgroundGroup from './Background'
     import RectsGroup from './Rects'
     import DrawGroup from './Draw'
@@ -22,6 +26,7 @@
     export default {
         name: 'paper-marker',
         components: {
+            VueSimpleContextMenu,
             backgroundGroup,
             RectsGroup,
             DrawGroup
@@ -66,7 +71,17 @@
                 questionCreate: {
                     no: null,
                     score: null
-                }
+                },
+                rectContextOptions: [
+                    {
+                        name: '编辑',
+                        action: 'edit'
+                    },
+                    {
+                        name: '删除',
+                        action: 'del'
+                    }
+                ]
             };
         },
         computed: {
@@ -79,9 +94,9 @@
             }
         },
         methods: {
-            updateRectListItem(rects, groupIndex, rectIndex) {
+            updateRectListGroup(rects, pageIndex, groupIndex) {
                 let newList = this.easyDeepCopy(this.rectList);
-                newList[groupIndex][rectIndex] = rects;
+                newList[pageIndex][groupIndex] = rects;
                 this.rectList = newList;
             },
             pageGroupConfig(index) {
@@ -260,6 +275,27 @@
             },
             handleStageMouseOut() {
             },
+            handlerRectContextMenu({evt, index}, pageIndex, groupIndex) {
+                this.$refs.rectContextMenu.showMenu(evt, {
+                    pageIndex, groupIndex, index
+                });
+            },
+            handlerRectContextMenuClick({item, option}) {
+                const action = option.action;
+                const {pageIndex, groupIndex, index} = item;
+                if (action === 'del') {
+                    this.deleteRectItemByIndex(pageIndex, groupIndex, index);
+                } else if (action === 'edit') {
+                    this.editRectItemByIndex(pageIndex, groupIndex, index);
+                }
+            },
+            editRectItemByIndex(page, group, index) {
+                console.log('edit', page, group, index);
+            },
+            deleteRectItemByIndex(page, group, index) {
+                this.$refs.layer.getStage().find('Transformer').detach();
+                this.rectList[page][group].splice(index, 1);
+            },
             easyDeepCopy(target) {
                 return JSON.parse(JSON.stringify(target));
             }
@@ -293,6 +329,7 @@
     };
 </script>
 
+<style>@import '~vue-simple-context-menu/dist/vue-simple-context-menu.css';</style>
 <style scoped lang="sass">
     .marker-stage
         background: #999

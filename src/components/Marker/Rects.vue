@@ -6,7 +6,8 @@
             @transformend='handleGroupSizeChanged($event, index)'
             @dragend='handleGroupPositionChange($event, index)'
             @mousedown='handleGroupMouseDown'
-            @click='handleRectGroupClick')
+            @click='handleRectGroupClick'
+            @click.right='handleRectGroupContext($event, index)')
             v-rect(:config='getRectConfig(item)'
                 @mouseenter='handleRectMouseEnter'
                 @mouseleave='handleRectMouseLeave')
@@ -88,6 +89,12 @@
                 target.moveToTop();
                 parent.moveToTop();
                 page.draw();
+            },
+            handleRectGroupContext(event, index) {
+                const evt = event.evt;
+                this.$emit('context', {evt, index});
+                evt.stopPropagation();
+                evt.preventDefault();
             },
             handleGroupPositionChange(event, index) {
                 const {x, y} = event.target.getAttrs();
