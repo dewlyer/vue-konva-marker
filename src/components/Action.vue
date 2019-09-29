@@ -55,6 +55,8 @@
                             div.mr-4()
                                 span.mr-4 题号： {{ item.attrs.no }}
                                 span.mr-4 分数： {{ item.attrs.score }}
+                hr
+                pre {{ list }}
 </template>
 
 <script>
