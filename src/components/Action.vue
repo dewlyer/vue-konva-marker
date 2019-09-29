@@ -139,7 +139,7 @@
                 return this.actionPanel.infoMap[key];
             },
             actionPanelCardStyle(index) {
-                return index > 1 ? {display: 'none'} : {};
+                return index > 1 ? {display: 'block'} : {};
             },
             paperGroupHeader(index) {
                 return this.actionPanel.groups[index].title;
