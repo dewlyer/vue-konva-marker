@@ -115,8 +115,18 @@
                     height: Math.abs(drawStart.y - drawEnd.y)
                 });
             },
+            handlerNewRectPromptClose() {
+                this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
+                    if (modalId === 'questionCreateModal' && bvEvent.trigger === 'ok') {
+                        if (!this.questionCreate.no || !this.questionCreate.score) {
+                            bvEvent.preventDefault();
+                            window.alert('请输入题号和分数');
+                        }
+                    }
+                });
+            },
             createNewRectPrompt(result) {
-                const messageVNode = (
+                const message = (
                     <b-form>
                         <b-form-group label-cols='2' label='新增题号:' label-for='questionCreateInput-1'>
                             <b-form-input id='questionCreateInput-1' placeholder='请输入题号' required='required'
@@ -136,6 +146,7 @@
                     okTitle: '确认',
                     cancelTitle: '取消',
                     hideHeaderClose: false,
+                    noCloseOnBackdrop: true,
                     centered: true,
                     scrollable: true
                 };
@@ -143,7 +154,7 @@
                     if (result.groupIndex === 0) {
                         resolve(result)
                     } else {
-                        this.$bvModal.msgBoxConfirm([messageVNode], option).then(value => {
+                        this.$bvModal.msgBoxConfirm([message], option).then(value => {
                             const {no, score} = this.questionCreate;
                             result.rect.attrs = {no, score};
                             result.rect.label = `题号 ${no} （分数 ${score}）`;
@@ -186,16 +197,26 @@
                 this.drawingRect.visible = true;
                 this.drawingRect.start = this.getAbsolutePosition(event);
             },
-            endDrawingRect() {
+            async endDrawingRect() {
                 if (!this.draw.status) {
                     return;
                 }
 
-                this.createNewRect(this.draw).then(result => {
-                    return this.createNewRectPrompt(result);
-                }).then(({pageIndex, groupIndex, rect}) => {
+                try {
+                    const result = await this.createNewRect(this.draw);
+                    const {pageIndex, groupIndex, rect} = await this.createNewRectPrompt(result);
                     this.rectList[pageIndex][groupIndex].push(rect);
-                }).finally(() =>{
+                } catch (error) {
+                    if (error) {
+                        this.$bvToast.toast(error, {
+                            variant: 'danger',
+                            toaster: 'b-toaster-bottom-right',
+                            autoHideDelay: 3000,
+                            appendToast: false,
+                            noCloseButton: true
+                        });
+                    }
+                } finally {
                     this.questionCreate.score = null;
                     this.questionCreate.no = null;
                     this.drawingRect.visible = false;
@@ -210,17 +231,7 @@
                             attrs: {}
                         }
                     });
-                }).catch(error => {
-                    if (error) {
-                        this.$bvToast.toast(error, {
-                            variant: 'danger',
-                            toaster: 'b-toaster-bottom-right',
-                            autoHideDelay: 3000,
-                            appendToast: false,
-                            noCloseButton: true
-                        });
-                    }
-                });
+                }
             },
             doDrawingRect(event) {
                 if (!this.draw.status) {
@@ -271,23 +282,13 @@
                 // stage.draw();
             }
         },
-        mounted() {
-            this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
-                if (modalId === 'questionCreateModal' && bvEvent.trigger === 'ok') {
-                    if (this.questionCreate.no && this.questionCreate.score) {
-                        // TODO: Add Rect Remove Action
-                        // console.log(bvEvent)
-                    } else {
-                        window.alert('请输入题号和分数');
-                        bvEvent.preventDefault();
-                    }
-                }
-            })
-        },
         created() {
             this.rectList = this.easyDeepCopy(this.list);
             this.updateStageSize();
             window.addEventListener('resize', this.updateStageSize);
+        },
+        mounted() {
+            this.handlerNewRectPromptClose();
         }
     };
 </script>

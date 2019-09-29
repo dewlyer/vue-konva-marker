@@ -12,10 +12,8 @@ Vue.use(VueKonva);
 
 Vue.use(BootstrapVue);
 
-const app = new Vue({
+new Vue({
     store,
     el: '#app',
     render: h => h(App)
 });
-
-console.log(app);
