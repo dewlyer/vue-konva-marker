@@ -68,10 +68,7 @@
                     start: null,
                     end: null,
                 },
-                questionCreate: {
-                    no: null,
-                    score: null
-                },
+                questionCreate: {},
                 rectContextOptions: [
                     {
                         name: '编辑',
@@ -171,8 +168,10 @@
                     } else {
                         this.$bvModal.msgBoxConfirm([message], option).then(value => {
                             const {no, score} = this.questionCreate;
+                            let label = no ? `题号${no}` : '';
+                            score && (label += `（分数 ${score}）`);
                             result.rect.attrs = {no, score};
-                            result.rect.label = `题号 ${no} （分数 ${score}）`;
+                            result.rect.label = label;
                             value ? resolve(result) : reject();
                         });
                     }
@@ -232,8 +231,7 @@
                         });
                     }
                 } finally {
-                    this.questionCreate.score = null;
-                    this.questionCreate.no = null;
+                    this.questionCreate = {};
                     this.drawingRect.visible = false;
                     this.resetDrawingStatus();
                     this.$store.commit('marker/updateDraw', {
@@ -290,7 +288,20 @@
                 }
             },
             editRectItemByIndex(page, group, index) {
-                console.log('edit', page, group, index);
+                let rect = this.rectList[page][group][index];
+                if (!rect) {
+                    return
+                }
+
+                let attrs = rect.attrs;
+                if (!attrs || !Object.keys(attrs).length) {
+                    return;
+                }
+
+                this.questionCreate = attrs;
+                this.createNewRectPrompt({rect}, true)
+                    .then(result => rect = result)
+                    .then(() => this.questionCreate = {});
             },
             deleteRectItemByIndex(page, group, index) {
                 this.$refs.layer.getStage().find('Transformer').detach();
