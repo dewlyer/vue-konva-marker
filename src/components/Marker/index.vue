@@ -241,16 +241,7 @@
                     this.questionCreate = {};
                     this.drawingRect.visible = false;
                     this.resetDrawingStatus();
-                    this.$store.commit('marker/updateDraw', {
-                        draw: {
-                            status: false,
-                            rectId: null,
-                            label: null,
-                            groupIndex: null,
-                            editable: false,
-                            attrs: {}
-                        }
-                    });
+                    this.$store.commit('marker/restoreDraw');
                 }
             },
             doDrawingRect(event) {

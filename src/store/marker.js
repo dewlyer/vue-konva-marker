@@ -1,13 +1,26 @@
 const state = {
     draw: {
         status: false,
+        rectId: null,
+        label: null,
         groupIndex: null,
-        rectId: null
+        editable: false,
+        attrs: {}
     },
     scale: 1
 };
 
 const mutations = {
+    restoreDraw(state) {
+        state.draw = {
+            status: false,
+            rectId: null,
+            label: null,
+            groupIndex: null,
+            editable: false,
+            attrs: {}
+        };
+    },
     updateDraw(state, {draw}) {
         state.draw = draw;
     },
