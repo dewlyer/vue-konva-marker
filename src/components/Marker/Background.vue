@@ -33,26 +33,25 @@
             resetGroupConfig() {
                 this.config.width = 0;
                 this.config.height = 0;
+                return this;
             },
-            updateGroupConfig({x}, {height}) {
+            updateGroupConfig(x, height) {
                 this.config.width = x;
                 this.config.height = Math.max(height, this.config.height);
             },
-            loadBackground() {
-                this.resetGroupConfig();
-                return loadAllImages(this.src).then(images => {
-                    let coords = {x: 0, y: 0};
-                    this.list = images.map(image => {
-                        const config = {
-                            ...this.shadow,
-                            ...coords,
-                            image
-                        };
-                        coords.x += image.width;
-                        this.updateGroupConfig(coords, image);
-                        return config;
-                    });
+            async loadAllImages() {
+                return await loadAllImages(this.src);
+            },
+            async loadBackground() {
+                let config = {...this.shadow, x: 0, y: 0};
+                const images = await this.resetGroupConfig().loadAllImages();
+                this.list = images.map(image => {
+                    let cfg = {...config, image};
+                    config.x += image.width;
+                    this.updateGroupConfig(config.x, image.height);
+                    return cfg;
                 });
+                return images;
             }
         },
         watch: {

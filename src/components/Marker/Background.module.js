@@ -3,7 +3,7 @@ export const shadow = {
     shadowBlur: 15,
     shadowOffsetX: 15,
     shadowOffsetY: 15,
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.3
 };
 
 export function loadAllImages(src) {
