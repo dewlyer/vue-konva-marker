@@ -23,6 +23,9 @@
     import DrawGroup from './Draw'
     import {STAGE_PADDING} from '../../config'
 
+    /**
+     * @const $event
+     */
     export default {
         name: 'paper-marker',
         components: {
@@ -70,6 +73,10 @@
                 },
                 questionCreate: {},
                 rectContextOptions: [
+                    {
+                        name: '锁定/解锁',
+                        action: 'lock'
+                    },
                     {
                         name: '编辑',
                         action: 'edit'
@@ -256,8 +263,13 @@
                 }
             },
             handleStageMouseDown(event) {
+                const evt = event.evt;
                 const target = event.target;
                 const className = target.getClassName();
+
+                if (evt.button !== 0) {
+                    return;
+                }
 
                 if (className !== 'Image') {
                     return;
@@ -266,6 +278,12 @@
                 this.startDrawingRect(event);
             },
             handleStageMouseUp(event) {
+                const evt = event.evt;
+
+                if (evt.button !== 0) {
+                    return;
+                }
+
                 this.endDrawingRect(event);
             },
             handleStageMouseMove(event) {
@@ -274,6 +292,13 @@
             handleStageMouseOut() {
             },
             handlerRectContextMenu({evt, index}, pageIndex, groupIndex) {
+                let rect = this.rectList[pageIndex][groupIndex][index];
+                this.rectContextOptions = this.rectContextOptions.map(item => {
+                    if (item.action === 'lock') {
+                        item.name = rect.editable ? '锁定' : '解锁';
+                    }
+                    return item;
+                });
                 this.$refs.rectContextMenu.showMenu(evt, {
                     pageIndex, groupIndex, index
                 });
@@ -285,7 +310,14 @@
                     this.deleteRectItemByIndex(pageIndex, groupIndex, index);
                 } else if (action === 'edit') {
                     this.editRectItemByIndex(pageIndex, groupIndex, index);
+                } else if (action === 'lock') {
+                    this.setRectItemEditableAttr(pageIndex, groupIndex, index);
                 }
+            },
+            setRectItemEditableAttr(page, group, index) {
+                let rect = this.rectList[page][group][index];
+                rect.editable = !rect.editable;
+                this.$refs.layer.getStage().find('Transformer').detach();
             },
             editRectItemByIndex(page, group, index) {
                 let rect = this.rectList[page][group][index];
@@ -299,7 +331,7 @@
                 }
 
                 this.questionCreate = attrs;
-                this.createNewRectPrompt({rect}, true)
+                this.createNewRectPrompt({rect})
                     .then(result => rect = result)
                     .then(() => this.questionCreate = {});
             },
@@ -325,8 +357,7 @@
             scale(value) {
                 const stage = this.$refs.stage.getStage();
                 stage.scale({x: value, y: value});
-                stage.batchDraw();
-                // stage.draw();
+                stage.batchDraw(); // stage.draw();
             }
         },
         created() {

@@ -197,13 +197,12 @@
                 };
                 this.$store.commit('marker/updateDraw', {draw});
             },
-            loadLocalImages(files) {
-                this.readAllImageFiles(files).then(images => {
-                    if (images && images.length) {
-                        this.handlePaperIndexChange(0);
-                        this.handlePaperImageChange(images);
-                    }
-                });
+            async loadLocalImages(files) {
+                const images = await this.readAllImageFiles(files);
+                if (images && images.length) {
+                    this.handlePaperIndexChange(0);
+                    this.handlePaperImageChange(images);
+                }
             },
             readAllImageFiles(files) {
                 return Promise.all(Array.prototype.map.call(files, file => new Promise((resolve, reject) => {
