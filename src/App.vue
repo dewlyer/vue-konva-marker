@@ -7,9 +7,9 @@
 <script>
     import PaperMarker from './components/Marker'
     import PaperAction from './components/Action'
-    import Paper_A from './assets/paper/a.jpg'
-    import Paper_B from './assets/paper/b.jpg'
-    import Rect_List from './Data'
+    import Paper_A from '@/assets/paper/a.jpg'
+    import Paper_B from '@/assets/paper/b.jpg'
+    import Rect_List from '@/Data'
 
     export default {
         name: 'app',
